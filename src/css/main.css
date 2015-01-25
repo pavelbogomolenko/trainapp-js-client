@@ -1,0 +1,125 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.login-form-section {
+    clear: both;
+    margin: 0 auto;
+    max-width: 454px;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.form-general {
+    max-width: 430px;
+    padding: 15px;
+}
+
+.box {
+    width: 100%;
+    max-width: 100%;
+    background: #fff;
+    padding: 1px;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+.box header {
+    position: relative;
+    padding: 10px;
+    background-color: #fafafa;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+h2.form-signin-heading {
+    margin: 5px;
+}
+
+.box-content {
+    border-top: 1px solid #fff;
+    background: #f5f5f5;
+    padding: 9px;
+}
+
+.row {
+    margin-bottom: 20px;
+}
+.row .row {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+[class*="col-"] {
+    padding: 15px 15px 15px 15px;
+    margin: 0px 5px 5px 0px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border: 1px solid rgba(86, 61, 124, .2);
+    min-height: 200px;
+}
+
+@media (min-width: 992px) {
+    [class*="col-"] {
+        width: 32%;
+    }
+}
+
+.dashed {
+    border: 5px dashed ;
+    border-color: rgba(86,61,124,.2);
+}
+
+/*.dashed > p {*/
+    /*margin: 0px 0px 0px !important;*/
+/*}*/
+
+.edit-visible {
+    display: none;
+}
+
+.editable:hover div:nth-child(2) .edit-visible:first-child {
+    display: block;
+}
+
+.stopwatch-icon {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+}
+
+.stopwatch-text {
+    position: absolute;
+    left: 40%;
+    top: 40%;
+}
+
+.stopwatch-text p {
+    color: #C4C4C4;
+    font-weight: bold;
+    font-size: 200%;
+}
+
+.device-attributes p {
+    margin: 0px 0px 0px 0px;
+    font-size: 1.2em;
+}
+
+.device-attributes h3 {
+    margin-top: 5px;
+}
+
+.inline-edit {
+    float:left;
+}
+
+.inline-edit input {
+    max-width: 5em;
+}

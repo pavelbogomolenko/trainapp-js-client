@@ -1,0 +1,7 @@
+*.iml
+/.idea
+/build
+/bower_components
+/web
+/node_modules
+/npm-debug.log

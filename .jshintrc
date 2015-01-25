@@ -1,0 +1,33 @@
+{
+	"bitwise": true,
+	"camelcase": true,
+	"curly": true,
+	"eqeqeq": true,
+	"forin": true,
+	"freeze": false,
+	"funcscope": false,
+	"globalstrict": false,
+	"indent": 4,
+	"latedef": false,
+	"maxcomplexity": 5,
+	"maxdepth": 5,
+	"maxerr": 50,
+	"maxparams": 6,
+	"newcap": true,
+	"noarg": true,
+	"noempty": true,
+	"nonbsp": true,
+	"undef": true,
+	"unused": true,
+	"asi": false,
+	"evil": false,
+	"browser": true,
+	"devel": true,
+	"globals": {
+		"angular": true,
+		"moment": true,
+		"_": true,
+		"require": true,
+		"gulp": true
+	}
+}
