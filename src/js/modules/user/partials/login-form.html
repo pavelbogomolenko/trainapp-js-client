@@ -16,13 +16,16 @@
                 <!--</label>-->
                 <!--</div>-->
                 <div>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                    <button class="btn btn-lg btn-info btn-block" type="submit">Sign in</button>
                 </div>
                 <div class="text-center"><span>OR</span></div>
-                <div>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Connect with FB</button>
+                <div class="text-center">
+                    <!--<button class="btn btn-lg btn-info btn-block" type="submit">Connect with FB</button>-->
+                    <div class="fb-login-button" data-max-rows="1" onlogin="console.log(123);"
+                         data-scope="public_profile,user_friends"
+                         data-size="xlarge" data-show-faces="false"
+                         data-auto-logout-link="true"></div>
                 </div>
-                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();"></fb:login-button>
             </form>
         </div>
     </div>

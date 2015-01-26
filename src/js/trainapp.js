@@ -28,7 +28,11 @@ angular.module('trainapp', [
 
             //FB API config
             $facebookProvider.setAppId('362143467323580');
-            $facebookProvider.setVersion("v2.2");
+            $facebookProvider.setVersion('v2.0');
+            $facebookProvider.setCustomInit({
+                status     : true,
+                xfbml      : true
+            });
         }
     ])
 
@@ -67,11 +71,12 @@ angular.module('trainapp', [
              * Listen to state changes
              */
             $rootScope.$on('$stateChangeStart', function () {
+                console.log('$stateChangeStart');
                 $rootScope.httpStatusCode = 102;
             });
             $rootScope.$on('$stateChangeSuccess', function () {
-                console.log('$stateChangeSuccess');
-                $rootScope.httpStatusCode = 200;
+                console.log('$stateChangeSuccess', $rootScope.globalLoading);
+                $rootScope.httpStatusCode = !$rootScope.globalLoading ? 200 : 102;
             });
             $rootScope.$on('$stateChangeError', function (event, toScope, toScopeParams, fromScope, fromScopeParams, error) {
                 console.log('$stateChangeError');
@@ -99,23 +104,30 @@ angular.module('trainapp', [
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 if(next.name !== 'login') {
+                    console.log('login');
+                    $rootScope.globalLoading = true;
                     AuthService.isLoggedIn().then(function(rsp) {
                         switch(rsp.status) {
                         case 'not_authorized':
                             console.log('login');
                             $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
                             $state.go('login');
+                            $rootScope.globalLoading = false;
                             break;
                         case 'connected':
                             $rootScope.$broadcast(AuthService.AuthEvents.loginSuccess);
                             console.log('u are connected');
+                            $rootScope.globalLoading = false;
                             break;
                         default:
                             $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
                             $state.go('login');
+                            $rootScope.globalLoading = false;
                             break;
                         }
                     });
+                } else {
+                    $rootScope.globalLoading = false;
                 }
             });
         }
