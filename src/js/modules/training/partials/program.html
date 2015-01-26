@@ -1,0 +1,125 @@
+<div class="container text-center">
+    <button class="btn btn-info btn-lg" type="submit">Start training</button>
+    <button class="btn btn-warning btn-lg" type="submit">Stop training</button>
+</div>
+
+<div class="container">
+    <div class="pull-left editable">
+        <div class="pull-left">
+            <h3><a href="#" editable-text="model.program.title">{{ model.program.title || "Your current programm" }}</a></h3>
+        </div>
+        <div class="pull-left">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+        </div>
+        <!--<div class="pull-left">-->
+            <!--<span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>-->
+        <!--</div>-->
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+            <div class="stopwatch-icon">
+                <div><i class="fa fa-play fa-3x"></i></div>
+            </div>
+            <div class="device-attributes">
+                <div class="editable">
+                    <div class="pull-left">
+                        <h3><a href="#" editable-text="model.device.title">{{ model.device.title || "Device name" }}</a></h3>
+                    </div>
+                    <div class="pull-left">
+                        <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o"></i></a></span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="editable">
+                    <div class="pull-left">
+                        <p><a href="#" editable-text="model.device.attribute.title">{{ model.device.attribute.title || "Attribute" }}</a>: <a href="#" editable-text="model.device.attribute.value">{{ model.device.attribute.value || "value" }}</a></p>
+                    </div>
+                    <div class="pull-left">
+                        <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o"></i></a></span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="editable">
+                    <div class="pull-left">
+                        <p>Lehne: 4</p>
+                    </div>
+                    <div class="pull-left">
+                        <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o"></i></a></span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="editable">
+                    <div class="pull-left">
+                        <p>Polster: 4</p>
+                    </div>
+                    <div class="pull-left">
+                        <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o"></i></a></span>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div>
+                    <a href="#"><i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 editable">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+            <div class="stopwatch-icon">
+                <div><i class="fa fa-pause fa-3x"></i></div>
+            </div>
+            <div class="device-attributes">
+                <h3>Name B</h3>
+                <p>Sitz: 6</p>
+                <p>Lehne: 4</p>
+                <p>Polster: 4</p>
+            </div>
+        </div>
+        <div class="col-md-4 editable">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+            <span class="label label-success pull-right"><i class="fa fa-check-square fa-3x"></i></span>
+            <div class="device-attributes">
+                <h3>Name C1</h3>
+                <p>Sitz: 6</p>
+                <p>Lehne: 4</p>
+                <p>Polster: 1</p>
+            </div>
+            <div class="stopwatch-text">
+                <div><p>120 sec</p></div>
+            </div>
+        </div>
+        <div class="col-md-4 editable">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+            <span class="label label-success pull-right"><i class="fa fa-check-square fa-3x"></i></span>
+            <div class="device-attributes">
+                <h3>Name C5</h3>
+                <p>Sitz: 6</p>
+                <p>Lehne: 4</p>
+                <p>Polster: 1</p>
+            </div>
+        </div>
+        <div class="col-md-4 editable">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+            <span class="label label-success pull-right"><i class="fa fa-check-square fa-3x"></i></span>
+            <div class="device-attributes">
+                <h3>Name C3</h3>
+                <p>Sitz: 2</p>
+                <div class="inline-edit"><input type="text" name="attributeTitle" value="attribute">:
+                    <input type="text" name="attributeValue" value="attribute"></div>
+                <!--<p>Lehne: 2</p>-->
+                <!--<p>Polster: 1</p>-->
+            </div>
+            <div class="stopwatch-text">
+                <div><p>90 sec</p></div>
+            </div>
+        </div>
+        <div class="col-md-4 dashed">
+            <div>
+                <!--<p class="text-center"></span><i class="fa fa-plus fa-3x"></i></p>-->
+            </div>
+        </div>
+    </div>
+</div>

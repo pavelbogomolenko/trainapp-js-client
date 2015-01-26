@@ -22,5 +22,5 @@
 	"src/**/services/*.js",
 	"src/**/*.js",
 	"src/**/*.css",
-	"src/*/**/*.html"
+	"src/**/*.html"
 ]

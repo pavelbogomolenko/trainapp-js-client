@@ -8,27 +8,41 @@ angular.module('trainapp', [
         'ui.router',
         'xeditable',
         'ngFacebook',
-        'trainapp.user'
+        'trainapp.user',
+        'trainapp.training'
     ])
 
 /**
- * General application config
+ * application constants
+ */
+    .constant('appConfig', {
+        'fbAppId': '362143467323580',
+        'fbApiVersion': 'v2.0',
+        'defaultRoute': 'program'
+    })
+
+/**
+ * Services configuration
  */
     .config([
+        'appConfig',
         '$locationProvider',
         '$stateProvider',
         '$facebookProvider',
-        function ($locationProvider, $stateProvider, $facebookProvider) {
+        function (appConfig, $locationProvider, $stateProvider, $facebookProvider) {
             "use strict";
 
+            /**
+             * configure urls
+             */
             $locationProvider.html5Mode({
                 enabled: true,
                 requireBase: false
             });
 
-            //FB API config
-            $facebookProvider.setAppId('362143467323580');
-            $facebookProvider.setVersion('v2.0');
+            //FB API configuration
+            $facebookProvider.setAppId(appConfig.fbAppId);
+            $facebookProvider.setVersion(appConfig.fbApiVersion);
             $facebookProvider.setCustomInit({
                 status     : true,
                 xfbml      : true
@@ -37,13 +51,22 @@ angular.module('trainapp', [
     ])
 
 /**
- *  inject FB code
+ *  Other services configuration which are not available via config
  */
     .run([
-        '$rootScope',
-        function ($rootScope) {
+        'editableOptions',
+        function (editableOptions) {
             "use strict";
 
+            /**
+             * configure xeditable
+             * @type {string}
+             */
+            editableOptions.theme = 'bs3';
+
+            /**
+             * inject FB code
+             */
             (function () {
                 (function (d, s, id) {
                     var js, fjs = d.getElementsByTagName(s)[0];
@@ -93,51 +116,77 @@ angular.module('trainapp', [
  * Handle authentification
  */
     .run([
+        'appConfig',
         '$state',
         '$rootScope',
         'AuthService',
-        function ($state, $rootScope, AuthService) {
+        'StorageService',
+        function (appConfig, $state, $rootScope, AuthService, StorageService) {
             "use strict";
 
             /**
              * Listen to state changes
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
-                if(next.name !== 'login') {
-                    console.log('login');
-                    $rootScope.globalLoading = true;
-                    AuthService.isLoggedIn().then(function(rsp) {
-                        switch(rsp.status) {
-                        case 'not_authorized':
-                            console.log('login');
-                            $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
-                            $state.go('login');
-                            $rootScope.globalLoading = false;
-                            break;
-                        case 'connected':
-                            $rootScope.$broadcast(AuthService.AuthEvents.loginSuccess);
-                            console.log('u are connected');
-                            $rootScope.globalLoading = false;
-                            break;
-                        default:
-                            $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
-                            $state.go('login');
-                            $rootScope.globalLoading = false;
-                            break;
-                        }
-                    });
-                } else {
+                var loggedIn = StorageService.get('loggedIn', false);
+                console.log(loggedIn);
+                if(loggedIn) {
+                    console.log('logged in', next.name);
                     $rootScope.globalLoading = false;
+                } else {
+                    console.log('not loggedin', next.name);
+                    $rootScope.globalLoading = true;
+
+                    if(next.name == 'login') {
+                        $rootScope.globalLoading = false;
+                    } else {
+                        AuthService.isLoggedIn().then(function (rsp) {
+                            switch (rsp.status) {
+                                case 'not_authorized':
+                                    console.log('login');
+                                    $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
+                                    $rootScope.globalLoading = false;
+                                    $state.go('login');
+                                    break;
+                                case 'connected':
+                                    $rootScope.$broadcast(AuthService.AuthEvents.loginSuccess);
+                                    console.log('u are connected', 'forwarding to ' + next.name);
+                                    $rootScope.globalLoading = false;
+
+                                    /**
+                                     * someone removed localStorage data
+                                     */
+                                    if(!loggedIn) {
+                                        AuthService.logout();
+                                        $state.go('login');
+                                        console.log('hello');
+                                    } else {
+                                        if (next.name !== 'login') {
+                                            console.log('never executed: ', next.name);
+                                            $state.go(next.name);
+                                        }
+                                    }
+
+                                    break;
+                                default:
+                                    $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
+                                    $rootScope.globalLoading = false;
+                                    $state.go('login');
+                                    break;
+                            }
+                        });
+                    }
                 }
             });
         }
     ])
 
     .controller('IndexCtrl', [
+        'appConfig',
         '$state',
-        function ($state) {
+        function (appConfig, $state) {
             "use strict";
 
-            $state.go('userprofile');
+            $state.go(appConfig.defaultRoute);
         }
     ]);

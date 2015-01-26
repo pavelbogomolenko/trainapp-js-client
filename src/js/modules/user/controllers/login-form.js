@@ -13,8 +13,11 @@ angular.module('trainapp.user')
     ])
 
     .controller('UserLoginCtrl', [
+        'appConfig',
+        '$state',
+        '$rootScope',
         '$scope',
-        function ($scope) {
+        function (appConfig, $state, $rootScope, $scope) {
             "use strict";
 
             /**
@@ -22,5 +25,12 @@ angular.module('trainapp.user')
              * @type {Object}
              */
             $scope.model = {};
+
+            /**
+             * listen to fb.auth.login event
+             */
+            $rootScope.$on('fb.auth.login', function(e, rsp) {
+                $state.go(appConfig.defaultRoute);
+            });
         }
     ]);

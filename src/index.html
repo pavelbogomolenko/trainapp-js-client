@@ -10,7 +10,16 @@
 </head>
 <body ng-cloak>
 
+
+<!-- page header -->
+<div class="container">
+    <ng-include src="'/src/header.html'" nowrap></ng-include>
+</div>
+
+<!-- main content -->
 <div class="container" ui-view ng-if="httpStatusCode == 200"></div>
+
+<!-- global spinner -->
 <div class="container" ng-if="httpStatusCode == 102">
     <div class="spinner">
         <div class="bounce1"></div>
@@ -19,6 +28,10 @@
     </div>
 </div>
 
+<!-- page footer -->
+<div class="container">
+    <ng-include src="'/src/footer.html'" nowrap></ng-include>
+</div>
 
 <!-- inject:js --><!-- endinject -->
 
