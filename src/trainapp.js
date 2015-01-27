@@ -129,6 +129,7 @@ angular.module('trainapp', [
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 var loggedIn = StorageService.get('loggedIn', false);
+                $rootScope.loggedIn = loggedIn;
                 console.log(loggedIn);
                 if(loggedIn) {
                     console.log('logged in', next.name);
@@ -184,8 +185,11 @@ angular.module('trainapp', [
     .controller('IndexCtrl', [
         'appConfig',
         '$state',
-        function (appConfig, $state) {
+        '$rootScope',
+        function (appConfig, $state, $rootScope) {
             "use strict";
+
+            $rootScope.state = $state;
 
             $state.go(appConfig.defaultRoute);
         }

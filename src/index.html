@@ -13,7 +13,7 @@
 
 <!-- page header -->
 <div class="container">
-    <ng-include src="'/src/header.html'" nowrap></ng-include>
+    <ng-include src="'/src/header.html'" ng-if="loggedIn" nowrap></ng-include>
 </div>
 
 <!-- main content -->

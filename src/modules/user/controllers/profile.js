@@ -7,7 +7,7 @@ angular.module('trainapp.user')
             $stateProvider.state('userprofile', {
                 url: '/userprofile',
                 controller: 'UserProfileCtrl',
-                templateUrl: '/src/js/modules/user/partials/profile-form.html'
+                templateUrl: '/src/modules/user/partials/profile-form.html'
             });
         }
     ])

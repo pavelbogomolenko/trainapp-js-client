@@ -7,7 +7,7 @@ angular.module('trainapp.user')
             $stateProvider.state('login', {
                 url: '/login',
                 controller: 'UserLoginCtrl',
-                templateUrl: '/src/js/modules/user/partials/login-form.html'
+                templateUrl: '/src/modules/user/partials/login-form.html'
             });
         }
     ])
