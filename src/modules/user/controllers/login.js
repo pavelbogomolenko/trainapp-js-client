@@ -23,7 +23,8 @@ angular.module('trainapp.user')
         '$state',
         '$rootScope',
         '$scope',
-        function (appConfig, $state, $rootScope, $scope) {
+        'AuthService',
+        function (appConfig, $state, $rootScope, $scope, AuthService) {
             "use strict";
 
             /**
@@ -38,6 +39,10 @@ angular.module('trainapp.user')
             $rootScope.$on('fb.auth.login', function(e, rsp) {
                 $state.go(appConfig.defaultRoute);
             });
+
+            $scope.fbLogin = function() {
+                AuthService.login();
+            };
         }
     ])
 

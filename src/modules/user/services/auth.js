@@ -36,6 +36,10 @@ angular.module('trainapp.user')
                 return $facebook.logout();
             };
 
+            AuthService.prototype.login = function() {
+                return $facebook.login();
+            };
+
             return new AuthService();
         }
     ]);
