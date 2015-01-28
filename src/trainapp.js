@@ -67,18 +67,16 @@ angular.module('trainapp', [
             /**
              * inject FB code
              */
-            (function () {
-                (function (d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) {
-                        return;
-                    }
-                    js = d.createElement(s);
-                    js.id = id;
-                    js.src = "//connect.facebook.net/en_US/sdk.js";
-                    fjs.parentNode.insertBefore(js, fjs);
-                }(document, 'script', 'facebook-jssdk'));
-            }());
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {
+                    return;
+                }
+                js = d.createElement(s);
+                js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
         }
     ])
 
@@ -128,6 +126,8 @@ angular.module('trainapp', [
              * Listen to state changes
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
+                $rootScope.globalLoading = true;
+
                 var loggedIn = StorageService.get('loggedIn', false);
                 $rootScope.loggedIn = loggedIn;
                 console.log(loggedIn);
@@ -136,7 +136,6 @@ angular.module('trainapp', [
                     $rootScope.globalLoading = false;
                 } else {
                     console.log('not loggedin', next.name);
-                    $rootScope.globalLoading = true;
 
                     if(next.name == 'login') {
                         $rootScope.globalLoading = false;

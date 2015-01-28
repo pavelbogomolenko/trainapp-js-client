@@ -11,6 +11,9 @@ angular.module('trainapp.user')
             });
 
             $rootScope.$on('fb.auth.login', function(e, rsp) {
+                var fbUserPromise = $facebook.cachedApi('/me');
+                console.log(fbUserPromise);
+
                 StorageService.set('loggedIn', true);
             });
 

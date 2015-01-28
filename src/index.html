@@ -10,17 +10,16 @@
 </head>
 <body ng-cloak>
 
-
 <!-- page header -->
 <div class="container">
-    <ng-include src="'/src/header.html'" ng-if="loggedIn" nowrap></ng-include>
+    <ng-include src="'/src/header.html'" ng-if="!state.is('login') && !state.is('logout') && loggedIn" nowrap></ng-include>
 </div>
 
 <!-- main content -->
 <div class="container" ui-view ng-if="httpStatusCode == 200"></div>
 
 <!-- global spinner -->
-<div class="container" ng-if="httpStatusCode == 102">
+<div class="container" ng-if="globalLoading || httpStatusCode == 102">
     <div class="spinner">
         <div class="bounce1"></div>
         <div class="bounce2"></div>

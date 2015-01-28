@@ -4,11 +4,17 @@ angular.module('trainapp.user')
         '$stateProvider',
         function ($stateProvider) {
             "use strict";
-            $stateProvider.state('login', {
-                url: '/login',
-                controller: 'UserLoginCtrl',
-                templateUrl: '/src/modules/user/partials/login-form.html'
-            });
+            $stateProvider
+                .state('login', {
+                    url: '/login',
+                    controller: 'UserLoginCtrl',
+                    templateUrl: '/src/modules/user/partials/login-form.html'
+                })
+                .state('logout', {
+                    url: '/logout',
+                    controller: 'UserLogoutCtrl',
+                    templateUrl: '/src/modules/user/partials/login-form.html'
+                });
         }
     ])
 
@@ -32,5 +38,14 @@ angular.module('trainapp.user')
             $rootScope.$on('fb.auth.login', function(e, rsp) {
                 $state.go(appConfig.defaultRoute);
             });
+        }
+    ])
+
+    .controller('UserLogoutCtrl', [
+        'AuthService',
+        function (AuthService) {
+            "use strict";
+
+            AuthService.logout();
         }
     ]);
