@@ -5,14 +5,9 @@ angular.module('trainapp.user')
         function ($stateProvider) {
             "use strict";
             $stateProvider
-                .state('login', {
-                    url: '/login',
-                    controller: 'UserLoginCtrl',
-                    templateUrl: '/src/modules/user/partials/login-form.html'
-                })
                 .state('logout', {
                     url: '/logout',
-                    controller: 'UserLogoutCtrl',
+                    controller: 'UserLoginCtrl',
                     templateUrl: '/src/modules/user/partials/login-form.html'
                 });
         }
@@ -33,6 +28,11 @@ angular.module('trainapp.user')
              */
             $scope.model = {};
 
+            if($state.is('logout')) {
+                AuthService.logout();
+                //$state.go('login');
+            }
+
             /**
              * listen to fb.auth.login event
              */
@@ -43,14 +43,5 @@ angular.module('trainapp.user')
             $scope.fbLogin = function() {
                 AuthService.login();
             };
-        }
-    ])
-
-    .controller('UserLogoutCtrl', [
-        'AuthService',
-        function (AuthService) {
-            "use strict";
-
-            AuthService.logout();
         }
     ]);

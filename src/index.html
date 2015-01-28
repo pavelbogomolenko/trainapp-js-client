@@ -12,15 +12,20 @@
 
 <!-- page header -->
 <div class="container">
-    <ng-include src="'/src/header.html'" ng-if="!state.is('login') && !state.is('logout')" nowrap></ng-include>
+    <ng-include src="'/src/header.html'" ng-if="loggedIn && !state.is('login') && !state.is('logout')" nowrap></ng-include>
 </div>
 
-{{ httpStatusCode }}
 <!-- main content -->
-<div class="container" ui-view ng-if="httpStatusCode == 200"></div>
+<div class="container" ui-view ng-if="httpStatusCode == 200 && loggedIn"></div>
+<div class="container" ng-if="httpStatusCode == 404">{{ httpStatusCode }}</div>
+
+
+<div class="container" ng-if="!globalLoading && httpStatusCode == 200 && !loggedIn">
+    <ng-include src="'/src/modules/user/partials/login-form.html'" nowrap></ng-include>
+</div>
 
 <!-- global spinner -->
-<div class="container" ng-if="globalLoading || httpStatusCode == 102">
+<div class="container" ng-if="httpStatusCode == 102 || globalLoading">
     <div class="spinner">
         <div class="bounce1"></div>
         <div class="bounce2"></div>

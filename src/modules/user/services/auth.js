@@ -14,6 +14,7 @@ angular.module('trainapp.user')
 
             $rootScope.$on('fb.auth.login', function(e, rsp) {
                 console.log('fb.auth.login');
+                $rootScope.loggedIn = true;
                 $facebook.cachedApi('/me').then(function(fbUserResponse) {
                     StorageService.set('fbSession', fbUserResponse);
                 }, function(error) {
@@ -75,7 +76,6 @@ angular.module('trainapp.user')
                     return deferred.promise;
                 },
                 logout: function() {
-                    console.log("someone called logout");
                     return $facebook.logout();
                 },
 

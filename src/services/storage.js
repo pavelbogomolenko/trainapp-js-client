@@ -18,7 +18,7 @@ angular.module('trainapp')
                     localStorage[k] = v;
                 },
                 getItem: function (k) {
-                    return typeof(localStorage[k]) != 'undefined' ? localStorage[k] : null
+                    return typeof(localStorage[k]) !== 'undefined' ? localStorage[k] : null;
                 },
                 removeItem: function (k) {
                     delete localStorage[k];

@@ -44,8 +44,8 @@ angular.module('trainapp', [
             $facebookProvider.setAppId(appConfig.fbAppId);
             $facebookProvider.setVersion(appConfig.fbApiVersion);
             $facebookProvider.setCustomInit({
-                status     : true,
-                xfbml      : true
+                status: true,
+                xfbml: true
             });
         }
     ])
@@ -84,9 +84,17 @@ angular.module('trainapp', [
  *  Http Status code handling
  */
     .run([
+        '$state',
         '$rootScope',
-        function ($rootScope) {
+        function ($state, $rootScope) {
             "use strict";
+
+            /**
+             * check if given url exists in routes
+             */
+            if(_.filter($state.get(),  { 'url': window.location.pathname }).length === 0) {
+                $rootScope.httpStatusCode = 404;
+            }
 
             /**
              * Listen to state changes
@@ -96,13 +104,13 @@ angular.module('trainapp', [
                 $rootScope.httpStatusCode = 102;
             });
             $rootScope.$on('$stateChangeSuccess', function () {
-                console.log('$stateChangeSuccess', $rootScope.globalLoading);
-                //$rootScope.httpStatusCode = !$rootScope.globalLoading ? 200 : 102;
+                console.log('$stateChangeSuccess');
                 $rootScope.httpStatusCode = 200;
             });
             $rootScope.$on('$stateChangeError', function (event, toScope, toScopeParams, fromScope, fromScopeParams, error) {
                 console.log('$stateChangeError');
                 $rootScope.httpStatusCode = typeof error.status === 'undefined' || error.status === 0 ? 500 : error.status;
+                console.log($rootScope.httpStatusCode);
             });
             $rootScope.$on('$stateNotFound', function () {
                 console.log('$stateNotFound');
@@ -119,8 +127,7 @@ angular.module('trainapp', [
         '$state',
         '$rootScope',
         'AuthService',
-        'StorageService',
-        function (appConfig, $state, $rootScope, AuthService, StorageService) {
+        function (appConfig, $state, $rootScope, AuthService) {
             "use strict";
 
             /**
@@ -128,21 +135,18 @@ angular.module('trainapp', [
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 $rootScope.globalLoading = true;
-                if(next.name == 'login') {
+                $rootScope.loggedIn = false;
+                AuthService.isLoggedIn().then(function (response) {
+                    console.log("success", response);
+                    $rootScope.loggedIn = true;
                     $rootScope.globalLoading = false;
-                } else {
-                    AuthService.isLoggedIn().then(function (response) {
-                        console.log("success", response);
-                        $rootScope.globalLoading = false;
 
-                        console.log("globalLoading",  $rootScope.globalLoading);
-                        console.log("go to", next.name);
-                    }, function (error) {
-                        console.log("error", error);
-                        $rootScope.globalLoading = false;
-                        $state.go('login');
-                    });
-                }
+                    console.log("globalLoading",  $rootScope.globalLoading);
+                    console.log("go to", next.name);
+                }, function (error) {
+                    console.log("not logged in error", error);
+                    $rootScope.globalLoading = false;
+                });
             });
         }
     ])
@@ -155,6 +159,8 @@ angular.module('trainapp', [
             "use strict";
 
             $rootScope.state = $state;
-            $state.go(appConfig.defaultRoute);
+            if(window.location.pathname === '/') {
+                $state.go(appConfig.defaultRoute);
+            }
         }
     ]);
