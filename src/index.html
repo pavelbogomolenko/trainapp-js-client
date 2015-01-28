@@ -12,9 +12,10 @@
 
 <!-- page header -->
 <div class="container">
-    <ng-include src="'/src/header.html'" ng-if="!state.is('login') && !state.is('logout') && loggedIn" nowrap></ng-include>
+    <ng-include src="'/src/header.html'" ng-if="!state.is('login') && !state.is('logout')" nowrap></ng-include>
 </div>
 
+{{ httpStatusCode }}
 <!-- main content -->
 <div class="container" ui-view ng-if="httpStatusCode == 200"></div>
 

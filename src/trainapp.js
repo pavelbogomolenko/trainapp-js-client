@@ -97,7 +97,8 @@ angular.module('trainapp', [
             });
             $rootScope.$on('$stateChangeSuccess', function () {
                 console.log('$stateChangeSuccess', $rootScope.globalLoading);
-                $rootScope.httpStatusCode = !$rootScope.globalLoading ? 200 : 102;
+                //$rootScope.httpStatusCode = !$rootScope.globalLoading ? 200 : 102;
+                $rootScope.httpStatusCode = 200;
             });
             $rootScope.$on('$stateChangeError', function (event, toScope, toScopeParams, fromScope, fromScopeParams, error) {
                 console.log('$stateChangeError');
@@ -127,55 +128,20 @@ angular.module('trainapp', [
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 $rootScope.globalLoading = true;
-
-                var loggedIn = StorageService.get('loggedIn', false);
-                $rootScope.loggedIn = loggedIn;
-                console.log(loggedIn);
-                if(loggedIn) {
-                    console.log('logged in', next.name);
+                if(next.name == 'login') {
                     $rootScope.globalLoading = false;
                 } else {
-                    console.log('not loggedin', next.name);
-
-                    if(next.name == 'login') {
+                    AuthService.isLoggedIn().then(function (response) {
+                        console.log("success", response);
                         $rootScope.globalLoading = false;
-                    } else {
-                        AuthService.isLoggedIn().then(function (rsp) {
-                            switch (rsp.status) {
-                                case 'not_authorized':
-                                    console.log('login');
-                                    $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
-                                    $rootScope.globalLoading = false;
-                                    $state.go('login');
-                                    break;
-                                case 'connected':
-                                    $rootScope.$broadcast(AuthService.AuthEvents.loginSuccess);
-                                    console.log('u are connected', 'forwarding to ' + next.name);
-                                    $rootScope.globalLoading = false;
 
-                                    /**
-                                     * someone removed localStorage data
-                                     */
-                                    if(!loggedIn) {
-                                        AuthService.logout();
-                                        $state.go('login');
-                                        console.log('hello');
-                                    } else {
-                                        if (next.name !== 'login') {
-                                            console.log('never executed: ', next.name);
-                                            $state.go(next.name);
-                                        }
-                                    }
-
-                                    break;
-                                default:
-                                    $rootScope.$broadcast(AuthService.AuthEvents.notAuthorized);
-                                    $rootScope.globalLoading = false;
-                                    $state.go('login');
-                                    break;
-                            }
-                        });
-                    }
+                        console.log("globalLoading",  $rootScope.globalLoading);
+                        console.log("go to", next.name);
+                    }, function (error) {
+                        console.log("error", error);
+                        $rootScope.globalLoading = false;
+                        $state.go('login');
+                    });
                 }
             });
         }
@@ -189,7 +155,6 @@ angular.module('trainapp', [
             "use strict";
 
             $rootScope.state = $state;
-
             $state.go(appConfig.defaultRoute);
         }
     ]);

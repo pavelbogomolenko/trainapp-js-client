@@ -1,23 +1,32 @@
 angular.module('trainapp.user')
     .factory('AuthService', [
+        '$q',
         '$facebook',
         '$rootScope',
         'StorageService',
-        function($facebook, $rootScope, StorageService) {
+        function($q, $facebook, $rootScope, StorageService) {
             "use strict";
 
             $rootScope.$on('fb.auth.logout', function(e, rsp) {
-                StorageService.remove('loggedIn');
+                console.log('fb.auth.logout');
+                StorageService.remove('fbSession');
             });
 
             $rootScope.$on('fb.auth.login', function(e, rsp) {
-                var fbUserPromise = $facebook.cachedApi('/me');
-                console.log(fbUserPromise);
-
-                StorageService.set('loggedIn', true);
+                console.log('fb.auth.login');
+                $facebook.cachedApi('/me').then(function(fbUserResponse) {
+                    StorageService.set('fbSession', fbUserResponse);
+                }, function(error) {
+                    console.log("error cachedApi", error);
+                });
             });
 
             function AuthService() {
+                /**
+                 * type of auth service to use
+                 * @type {string}
+                 */
+                this.type = 'fb';
                 this.AuthEvents = {
                     loginSuccess: 'loginSuccess',
                     loginFailed: 'loginFailed',
@@ -28,16 +37,51 @@ angular.module('trainapp.user')
                 };
             }
 
-            AuthService.prototype.isLoggedIn = function() {
-                return $facebook.getLoginStatus();
-            };
+            AuthService.prototype = {
+                setType: function(type) {
+                    this.type = type;
+                },
+                getType: function() {
+                    return this.type;
+                },
+                /**
+                 * Checks where user isLoggedIn
+                 *
+                 * @returns Promise{*}
+                 */
+                isLoggedIn: function() {
+                    var th = this;
+                    var deferred = $q.defer();
 
-            AuthService.prototype.logout = function() {
-                return $facebook.logout();
-            };
+                    switch(th.getType()) {
+                        case 'fb':
+                            $facebook.getLoginStatus().then(function (response) {
+                                if(response.status == 'connected') {
+                                    $rootScope.$broadcast(th.AuthEvents.loginSuccess);
+                                    deferred.resolve(response);
+                                } else {
+                                    $rootScope.$broadcast(th.AuthEvents.notAuthorized);
+                                    deferred.reject(response);
+                                }
+                            }, function (error) {
+                                console.log("error getLoginStatus", error);
+                                $rootScope.$broadcast(th.AuthEvents.loginFailed);
+                                deferred.reject(error);
+                            });
+                            break;
+                        default:
+                            throw new Exception(th.getType() + " authorization not supported");
+                    }
+                    return deferred.promise;
+                },
+                logout: function() {
+                    console.log("someone called logout");
+                    return $facebook.logout();
+                },
 
-            AuthService.prototype.login = function() {
-                return $facebook.login();
+                login: function() {
+                    return $facebook.login();
+                }
             };
 
             return new AuthService();
