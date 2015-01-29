@@ -79,6 +79,12 @@ h2.form-signin-heading {
     border-color: rgba(86,61,124,.2);
 }
 
+.dashed:hover {
+    border-color: #5bc0de;
+    cursor: pointer;
+    cursor: hand;
+}
+
 .edit-visible {
     display: none;
 }

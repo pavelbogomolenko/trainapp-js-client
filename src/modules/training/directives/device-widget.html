@@ -1,3 +1,36 @@
-<div class="col-md-4" ng-repeat="device in deviceItems" ng-form="item.form">
-    <ng-include src="'/src/js/modules/training/directives/device-item-widget.html" nowrap></ng-include>
+<span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o fa-3x"></i></a></span>
+<div class="stopwatch-icon">
+    <div><i class="fa fa-play fa-3x"></i></div>
+</div>
+<div class="device-attributes">
+    <span class="pull-right">
+        <a href="#" class="btn btn-danger" ng-click="removeDevice(device)">
+            <i class="fa fa-times fa-1x"></i>
+        </a>
+    </span>
+    <div ng-class="{editable: editable}">
+        <div class="pull-left">
+            <h3><a href="#" editable-text="device.title">{{ device.title || "Device name" }}</a></h3>
+        </div>
+        <div class="pull-left">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o"></i></a></span>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div ng-class="{editable: editable}" ng-repeat="attribute in device.attributes">
+        <div class="pull-left">
+            <p>
+                <a href="#" editable-text="attribute.title">{{ attribute.title || "Attribute" }}</a>:
+                <a href="#" editable-text="attribute.value">{{ attribute.value || "value" }}</a>
+                <a href="#" editable-text="attribute.measure">{{ attribute.measure || "units" }}</a>
+            </p>
+        </div>
+        <div class="pull-left">
+            <span class="edit-visible pull-right"><a href="#"><i class="fa fa-pencil-square-o"></i></a></span>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div>
+        <a href="#" ng-click="addAttribute()"><i class="fa fa-plus"></i></a>
+    </div>
 </div>

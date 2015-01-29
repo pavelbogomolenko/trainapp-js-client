@@ -4,47 +4,32 @@
  * <device-widget deviceItems="model.devices" editable="1"></device-widget>
  */
 angular.module('trainapp')
+
     .directive('deviceWidget', function () {
         "use strict";
 
         return {
             restrict: 'E',
-            require: 'ngModel',
-            controller: 'deviceWidget',
             templateUrl: '/src/modules/training/directives/device-widget.html',
             scope: {
                 editable: '=',
-                deviceItems: '@'
+                device: '='
             },
-            link: function ($scope, $element, $attrs, ngModel) {
+            link: function ($scope, $element, $attrs) {
 
-                /**
-                 * device items model
-                 * @type {Object[]}
-                 */
-                $scope.deviceItems = $scope.deviceItems || [];
+                $scope.device.attributes = $scope.device.attributes || [];
+                $scope.addAttribute = function() {
+                    $scope.device.attributes.push({});
+                };
+
+                $scope.$raddAttribute = function() {
+                    $scope.device.attributes.push({});
+                };
+
+                $scope.removeDevice = function(device) {
+                    $scope.$root.removeDevice(device);
+                };
             }
         };
 
-    }).controller('deviceWidget', [
-        '$scope',
-        function ($scope) {
-            "use strict";
-
-            /**
-             * Adds new empty device item
-             */
-            $scope.add = function () {
-                $scope.deviceItems.push({});
-            };
-
-            /**
-             * Removes device item
-             *
-             * @param {Object} item
-             */
-            $scope.delete = function (item) {
-                $scope.deviceItems = _.reject($scope.deviceItems, item);
-            };
-        }
-    ]);
+    });
