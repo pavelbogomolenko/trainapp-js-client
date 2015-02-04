@@ -4,7 +4,8 @@ angular.module('trainapp.user')
         '$facebook',
         '$rootScope',
         'StorageService',
-        function($q, $facebook, $rootScope, StorageService) {
+        'UserResourse',
+        function($q, $facebook, $rootScope, StorageService, UserResourse) {
             "use strict";
 
             $rootScope.$on('fb.auth.logout', function(e, rsp) {
@@ -14,8 +15,14 @@ angular.module('trainapp.user')
 
             $rootScope.$on('fb.auth.login', function(e, rsp) {
                 console.log('fb.auth.login');
-                $rootScope.loggedIn = true;
                 $facebook.cachedApi('/me').then(function(fbUserResponse) {
+                    var userResource = new UserResourse();
+
+                    UserResourse.save(function () {
+
+                    });
+
+                    $rootScope.loggedIn = true;
                     StorageService.set('fbSession', fbUserResponse);
                 }, function(error) {
                     console.log("error cachedApi", error);
@@ -57,7 +64,7 @@ angular.module('trainapp.user')
                     switch(th.getType()) {
                         case 'fb':
                             $facebook.getLoginStatus().then(function (response) {
-                                if(response.status == 'connected') {
+                                if(response.status === 'connected') {
                                     $rootScope.$broadcast(th.AuthEvents.loginSuccess);
                                     deferred.resolve(response);
                                 } else {
@@ -81,6 +88,9 @@ angular.module('trainapp.user')
 
                 login: function() {
                     return $facebook.login();
+                },
+                getXToken: function(){
+                    return StorageService.get('X-Auth', null);
                 }
             };
 

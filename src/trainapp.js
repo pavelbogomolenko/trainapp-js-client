@@ -18,7 +18,8 @@ angular.module('trainapp', [
     .constant('appConfig', {
         'fbAppId': '362143467323580',
         'fbApiVersion': 'v2.0',
-        'defaultRoute': 'program'
+        'defaultRoute': 'program',
+        'apiPrefix': '/api/1.0/'
     })
 
 /**
@@ -26,11 +27,38 @@ angular.module('trainapp', [
  */
     .config([
         'appConfig',
+        '$httpProvider',
         '$locationProvider',
         '$stateProvider',
         '$facebookProvider',
-        function (appConfig, $locationProvider, $stateProvider, $facebookProvider) {
+        function (appConfig, $httpProvider, $locationProvider, $stateProvider, $facebookProvider) {
             "use strict";
+
+            /**
+             * http service configuration
+             */
+            $httpProvider.interceptors.push([
+                '$q',
+                '$injector',
+                '$timeout',
+                function ($q, $injector, $timeout) {
+                    return {
+                        responseError: function (response) {
+                            if (response.status === 401) {
+                                $timeout(function () {
+                                    $injector.get('AuthService').logout();
+                                }, 0);
+                            }
+                            return $q.reject(response);
+                        },
+                        request: function ($config) {
+                            $config.headers['cache-control'] = 'max-age=180';
+                            $config.headers['X-AUTH'] = $injector.get('AuthService').getXToken();
+                            return $config;
+                        }
+                    };
+                }
+            ]);
 
             /**
              * configure urls
@@ -127,7 +155,8 @@ angular.module('trainapp', [
         '$state',
         '$rootScope',
         'AuthService',
-        function (appConfig, $state, $rootScope, AuthService) {
+        'StorageService',
+        function (appConfig, $state, $rootScope, AuthService, StorageService) {
             "use strict";
 
             /**
@@ -138,7 +167,9 @@ angular.module('trainapp', [
                 $rootScope.loggedIn = false;
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
-                    $rootScope.loggedIn = true;
+                    if(AuthService.getXToken()) {
+                        $rootScope.loggedIn = true;
+                    }
                     $rootScope.globalLoading = false;
 
                     console.log("globalLoading",  $rootScope.globalLoading);
