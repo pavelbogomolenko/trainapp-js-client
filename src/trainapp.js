@@ -19,7 +19,7 @@ angular.module('trainapp', [
         'fbAppId': '362143467323580',
         'fbApiVersion': 'v2.0',
         'defaultRoute': 'program',
-        'apiPrefix': '/api/1.0/'
+        'apiPrefix': 'http://127.0.0.1:8080/api/1.0/'
     })
 
 /**
@@ -52,8 +52,10 @@ angular.module('trainapp', [
                             return $q.reject(response);
                         },
                         request: function ($config) {
-                            $config.headers['cache-control'] = 'max-age=180';
-                            $config.headers['X-AUTH'] = $injector.get('AuthService').getXToken();
+                            //apply header auth only for REST API calls
+                            if ((/^\/api/i).test($config.url)) {
+                                $config.headers['X-AUTH'] = $injector.get('AuthService').getXToken();
+                            }
                             return $config;
                         }
                     };
@@ -156,7 +158,8 @@ angular.module('trainapp', [
         '$rootScope',
         'AuthService',
         'StorageService',
-        function (appConfig, $state, $rootScope, AuthService, StorageService) {
+        'FbloginResource',
+        function (appConfig, $state, $rootScope, AuthService, StorageService, FbloginResource) {
             "use strict";
 
             /**
@@ -167,6 +170,10 @@ angular.module('trainapp', [
                 $rootScope.loggedIn = false;
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
+                    var fbSession = StorageService.get('fbSession', {});
+
+                    FbloginResource.fblogin(fbSession.email)
+
                     if(AuthService.getXToken()) {
                         $rootScope.loggedIn = true;
                     }

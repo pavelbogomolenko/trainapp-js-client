@@ -4,8 +4,8 @@ angular.module('trainapp.user')
         '$facebook',
         '$rootScope',
         'StorageService',
-        'UserResourse',
-        function($q, $facebook, $rootScope, StorageService, UserResourse) {
+        'UserResource',
+        function($q, $facebook, $rootScope, StorageService, UserResource) {
             "use strict";
 
             $rootScope.$on('fb.auth.logout', function(e, rsp) {
@@ -16,12 +16,6 @@ angular.module('trainapp.user')
             $rootScope.$on('fb.auth.login', function(e, rsp) {
                 console.log('fb.auth.login');
                 $facebook.cachedApi('/me').then(function(fbUserResponse) {
-                    var userResource = new UserResourse();
-
-                    UserResourse.save(function () {
-
-                    });
-
                     $rootScope.loggedIn = true;
                     StorageService.set('fbSession', fbUserResponse);
                 }, function(error) {
