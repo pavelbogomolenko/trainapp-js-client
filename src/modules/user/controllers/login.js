@@ -30,7 +30,6 @@ angular.module('trainapp.user')
 
             if($state.is('logout')) {
                 AuthService.logout();
-                //$state.go('login');
             }
 
             /**
@@ -41,7 +40,13 @@ angular.module('trainapp.user')
             });
 
             $scope.fbLogin = function() {
+                AuthService.setType('fb');
                 AuthService.login();
+            };
+
+            $scope.login = function() {
+                AuthService.setType('website');
+                AuthService.login($scope.model.email, $scope.model.password);
             };
         }
     ]);

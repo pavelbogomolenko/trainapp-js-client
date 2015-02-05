@@ -17,7 +17,6 @@
 
 <!-- main content -->
 <div class="container" ui-view ng-if="httpStatusCode == 200 && loggedIn"></div>
-<div class="container" ng-if="httpStatusCode == 404">{{ httpStatusCode }}</div>
 
 
 <div class="container" ng-if="!globalLoading && httpStatusCode == 200 && !loggedIn">

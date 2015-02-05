@@ -18,7 +18,8 @@ angular.module('trainapp', [
     .constant('appConfig', {
         'fbAppId': '362143467323580',
         'fbApiVersion': 'v2.0',
-        'defaultRoute': 'program'
+        'defaultRoute': 'program',
+        'apiPrefix': 'http://127.0.0.1:8080/api/1.0/'
     })
 
 /**
@@ -26,11 +27,42 @@ angular.module('trainapp', [
  */
     .config([
         'appConfig',
+        '$httpProvider',
         '$locationProvider',
         '$stateProvider',
         '$facebookProvider',
-        function (appConfig, $locationProvider, $stateProvider, $facebookProvider) {
+        function (appConfig, $httpProvider, $locationProvider, $stateProvider, $facebookProvider) {
             "use strict";
+
+            /**
+             * http service configuration
+             */
+            $httpProvider.interceptors.push([
+                '$q',
+                '$injector',
+                '$timeout',
+                function ($q, $injector, $timeout) {
+                    return {
+                        responseError: function (response) {
+                            console.log('responseError', response);
+                            if (response.status === 401) {
+                                $timeout(function () {
+                                    $injector.get('AuthService').logout();
+                                }, 0);
+                            }
+                            return $q.reject(response);
+                        },
+                        request: function ($config) {
+                            //apply header auth only for REST API calls
+                            if ((/\/api\//i).test($config.url)) {
+                                $config.withCredentials = true;
+                                $config.headers['X-AUTH'] = $injector.get('AuthService').getXToken();
+                            }
+                            return $config;
+                        }
+                    };
+                }
+            ]);
 
             /**
              * configure urls
@@ -127,7 +159,8 @@ angular.module('trainapp', [
         '$state',
         '$rootScope',
         'AuthService',
-        function (appConfig, $state, $rootScope, AuthService) {
+        'StorageService',
+        function (appConfig, $state, $rootScope, AuthService, StorageService) {
             "use strict";
 
             /**
@@ -136,15 +169,35 @@ angular.module('trainapp', [
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 $rootScope.globalLoading = true;
                 $rootScope.loggedIn = false;
+
+                var loginType = StorageService.get('loginType', 'fb');
+                AuthService.setType(loginType);
+
+                window.console && window.console.log(AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
-                    $rootScope.loggedIn = true;
-                    $rootScope.globalLoading = false;
+                    var fbSession = StorageService.get('fbSession', null);
+                    if(fbSession) {
+                        AuthService.loginFbUser(fbSession.email).then(function () {
+                            if (AuthService.getXToken()) {
+                                $rootScope.loggedIn = true;
+                            }
+                            $rootScope.globalLoading = false;
+                        }, function (error) {
+                            console.log("error occured during loginFbUser", error);
+                        });
+                    } else {
+                        if (AuthService.getXToken()) {
+                            $rootScope.loggedIn = true;
+                        }
+                        $rootScope.globalLoading = false;
+                    }
 
                     console.log("globalLoading",  $rootScope.globalLoading);
                     console.log("go to", next.name);
                 }, function (error) {
                     console.log("not logged in error", error);
+                    AuthService.clearSession();
                     $rootScope.globalLoading = false;
                 });
             });
