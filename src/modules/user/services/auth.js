@@ -1,28 +1,18 @@
 angular.module('trainapp.user')
     .factory('AuthService', [
         '$q',
+        '$state',
         '$facebook',
         '$rootScope',
         'StorageService',
-        'UserResource',
-        function($q, $facebook, $rootScope, StorageService, UserResource) {
+        'FbloginResource',
+        function($q,$state, $facebook, $rootScope, StorageService, FbloginResource) {
             "use strict";
-
-            $rootScope.$on('fb.auth.logout', function(e, rsp) {
-                console.log('fb.auth.logout');
-                StorageService.remove('fbSession');
-            });
-
-            $rootScope.$on('fb.auth.login', function(e, rsp) {
-                console.log('fb.auth.login');
-                $facebook.cachedApi('/me').then(function(fbUserResponse) {
-                    $rootScope.loggedIn = true;
-                    StorageService.set('fbSession', fbUserResponse);
-                }, function(error) {
-                    console.log("error cachedApi", error);
-                });
-            });
-
+            
+            /**
+             *
+             * @constructor
+             */
             function AuthService() {
                 /**
                  * type of auth service to use
@@ -37,6 +27,24 @@ angular.module('trainapp.user')
                     notAuthenticated: 'notAuthenticated',
                     notAuthorized: 'notAuthorized'
                 };
+
+                var self = this;
+
+                $rootScope.$on('fb.auth.logout', function(e, rsp) {
+                    console.log('fb.auth.logout');
+                    self.clearSession();
+                });
+
+                $rootScope.$on('fb.auth.login', function(e, rsp) {
+                    console.log('fb.auth.login');
+                    $facebook.cachedApi('/me').then(function(fbUserResponse) {
+                        StorageService.set('fbSession', fbUserResponse);
+                        //force current state to reload in order to pass through $stateChangeStart checks
+                        $state.reload();
+                    }, function(error) {
+                        console.log("error cachedApi", error);
+                    });
+                });
             }
 
             AuthService.prototype = {
@@ -76,6 +84,18 @@ angular.module('trainapp.user')
                     }
                     return deferred.promise;
                 },
+                loginFbUser: function(email) {
+                    var deferred = $q.defer();
+
+                    FbloginResource.fblogin(email).$promise.then(function (fbSuccessResponse) {
+                        StorageService.set('userSession', fbSuccessResponse);
+                        deferred.resolve(fbSuccessResponse);
+                    }, function (fbErrorResponse) {
+                        deferred.reject(fbErrorResponse);
+                    });
+
+                    return deferred.promise;
+                },
                 logout: function() {
                     return $facebook.logout();
                 },
@@ -84,7 +104,12 @@ angular.module('trainapp.user')
                     return $facebook.login();
                 },
                 getXToken: function(){
-                    return StorageService.get('X-Auth', null);
+                    var userSession = StorageService.get('userSession', {});
+                    return userSession['sessionId'];
+                },
+                clearSession: function() {
+                    StorageService.remove('fbSession');
+                    StorageService.remove('userSession');
                 }
             };
 

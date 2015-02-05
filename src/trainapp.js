@@ -158,8 +158,7 @@ angular.module('trainapp', [
         '$rootScope',
         'AuthService',
         'StorageService',
-        'FbloginResource',
-        function (appConfig, $state, $rootScope, AuthService, StorageService, FbloginResource) {
+        function (appConfig, $state, $rootScope, AuthService, StorageService) {
             "use strict";
 
             /**
@@ -170,19 +169,28 @@ angular.module('trainapp', [
                 $rootScope.loggedIn = false;
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
-                    var fbSession = StorageService.get('fbSession', {});
-
-                    FbloginResource.fblogin(fbSession.email)
-
-                    if(AuthService.getXToken()) {
-                        $rootScope.loggedIn = true;
+                    var fbSession = StorageService.get('fbSession', null);
+                    if(fbSession) {
+                        AuthService.loginFbUser(fbSession.email).then(function () {
+                            if (AuthService.getXToken()) {
+                                $rootScope.loggedIn = true;
+                            }
+                            $rootScope.globalLoading = false;
+                        }, function (error) {
+                            console.log("error occured during loginFbUser", error);
+                        });
+                    } else {
+                        if (AuthService.getXToken()) {
+                            $rootScope.loggedIn = true;
+                        }
+                        $rootScope.globalLoading = false;
                     }
-                    $rootScope.globalLoading = false;
 
                     console.log("globalLoading",  $rootScope.globalLoading);
                     console.log("go to", next.name);
                 }, function (error) {
                     console.log("not logged in error", error);
+                    AuthService.clearSession();
                     $rootScope.globalLoading = false;
                 });
             });
