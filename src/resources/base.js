@@ -10,7 +10,6 @@ angular.module('trainapp')
              * @constructor
              */
             function BaseResource (resourceName) {
-                window.console && window.console.log(resourceName);
                 if(resourceName === '') {
                     throw 'resourceName is not set!'
                 }

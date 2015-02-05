@@ -6,9 +6,11 @@ angular.module('trainapp.user')
         '$rootScope',
         'StorageService',
         'FbloginResource',
-        function($q,$state, $facebook, $rootScope, StorageService, FbloginResource) {
+        'IsWebsiteLoginResource',
+        'WebsiteLoginResource',
+        function($q, $state, $facebook, $rootScope, StorageService, FbloginResource, IsWebsiteLoginResource, WebsiteLoginResource) {
             "use strict";
-            
+
             /**
              *
              * @constructor
@@ -45,6 +47,11 @@ angular.module('trainapp.user')
                         console.log("error cachedApi", error);
                     });
                 });
+
+                $rootScope.$on('loginSuccess', function(e, rsp) {
+                    window.console && window.console.log('website loginSuccess');
+                    $state.reload();
+                });
             }
 
             AuthService.prototype = {
@@ -60,24 +67,32 @@ angular.module('trainapp.user')
                  * @returns Promise{*}
                  */
                 isLoggedIn: function() {
-                    var th = this;
                     var deferred = $q.defer();
 
-                    switch(th.getType()) {
+                    switch(this.getType()) {
                         case 'fb':
                             $facebook.getLoginStatus().then(function (response) {
                                 if(response.status === 'connected') {
-                                    $rootScope.$broadcast(th.AuthEvents.loginSuccess);
                                     deferred.resolve(response);
                                 } else {
-                                    $rootScope.$broadcast(th.AuthEvents.notAuthorized);
                                     deferred.reject(response);
                                 }
                             }, function (error) {
-                                console.log("error getLoginStatus", error);
-                                $rootScope.$broadcast(th.AuthEvents.loginFailed);
+                                console.log("error FB getLoginStatus", error);
                                 deferred.reject(error);
                             });
+                            break;
+                        case 'website':
+                            if(this.getXToken()) {
+                                IsWebsiteLoginResource.getLoginStatus().$promise.then(function (response) {
+                                    deferred.resolve(response);
+                                }, function (error) {
+                                    console.log("error website getLoginStatus", error);
+                                    deferred.reject(error);
+                                });
+                            } else {
+                                deferred.reject('no valid X-Auth token');
+                            }
                             break;
                         default:
                             throw new Exception(th.getType() + " authorization not supported");
@@ -99,9 +114,22 @@ angular.module('trainapp.user')
                 logout: function() {
                     return $facebook.logout();
                 },
-
-                login: function() {
-                    return $facebook.login();
+                login: function(email, password) {
+                    switch(this.getType()) {
+                        case 'fb':
+                            return $facebook.login();
+                            break;
+                        case 'website':
+                            return WebsiteLoginResource.login(email, password).$promise.then(function (response) {
+                                StorageService.set('userSession', response);
+                                $rootScope.$broadcast('loginSuccess');
+                            }, function (error) {
+                                $rootScope.$broadcast('loginFailed');
+                            });
+                            break;
+                        default:
+                            throw new Exception(this.getType() + " authorization not supported");
+                    }
                 },
                 getXToken: function(){
                     var userSession = StorageService.get('userSession', {});

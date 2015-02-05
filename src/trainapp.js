@@ -44,6 +44,7 @@ angular.module('trainapp', [
                 function ($q, $injector, $timeout) {
                     return {
                         responseError: function (response) {
+                            console.log('responseError', response);
                             if (response.status === 401) {
                                 $timeout(function () {
                                     $injector.get('AuthService').logout();
@@ -53,7 +54,10 @@ angular.module('trainapp', [
                         },
                         request: function ($config) {
                             //apply header auth only for REST API calls
-                            if ((/^\/api/i).test($config.url)) {
+                            if ((/\/api\//i).test($config.url)) {
+                                window.console && window.console.log($config.url);
+                                window.console && window.console.log($injector.get('AuthService').getXToken());
+                                $config.withCredentials = true;
                                 $config.headers['X-AUTH'] = $injector.get('AuthService').getXToken();
                             }
                             return $config;
@@ -167,6 +171,8 @@ angular.module('trainapp', [
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 $rootScope.globalLoading = true;
                 $rootScope.loggedIn = false;
+
+                window.console && window.console.log(AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
                     var fbSession = StorageService.get('fbSession', null);

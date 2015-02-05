@@ -40,12 +40,13 @@ angular.module('trainapp.user')
             });
 
             $scope.fbLogin = function() {
-                $rootScope.loginType = 'fb';
+                AuthService.setType('fb');
                 AuthService.login();
             };
 
             $scope.login = function() {
-                $rootScope.loginType = 'website';
+                AuthService.setType('website');
+                AuthService.login($scope.model.email, $scope.model.password);
                 window.console && window.console.log('website login');
             };
         }
