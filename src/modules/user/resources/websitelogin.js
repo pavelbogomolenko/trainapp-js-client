@@ -1,5 +1,5 @@
 angular.module('trainapp.user')
-    .factory('FbloginResource', [
+    .factory('WebsiteLoginResource', [
         'BaseResource',
         function(BaseResource) {
             "use strict";
@@ -7,24 +7,26 @@ angular.module('trainapp.user')
             /**
              * inherit from BaseResource
              */
-            BaseResource.inherit(FbloginResource, BaseResource);
+            BaseResource.inherit(WebsiteLoginResource, BaseResource);
 
             /**
              *
              * @constructor
              */
-            function FbloginResource() {
-                var resourceName = 'fblogin';
+            function WebsiteLoginResource() {
+                var resourceName = 'login';
 
-                FbloginResource.parent.call(this, resourceName);
+                WebsiteLoginResource.parent.call(this, resourceName);
             }
 
-            FbloginResource.prototype.fblogin = function (email) {
+            WebsiteLoginResource.prototype.login = function (email, password) {
                 var resourceEntity = this.getNewResource();
                 resourceEntity.email = email;
+                resourceEntity.password = password;
                 return this.resource.save(resourceEntity);
             };
 
-            return new FbloginResource();
+
+            return new WebsiteLoginResource();
         }
     ]);

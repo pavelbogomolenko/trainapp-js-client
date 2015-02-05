@@ -57,6 +57,7 @@ angular.module('trainapp.user')
             AuthService.prototype = {
                 setType: function(type) {
                     this.type = type;
+                    StorageService.set('loginType', this.type);
                 },
                 getType: function() {
                     return this.type;
@@ -112,7 +113,8 @@ angular.module('trainapp.user')
                     return deferred.promise;
                 },
                 logout: function() {
-                    return $facebook.logout();
+                    $facebook.logout();
+                    this.clearSession();
                 },
                 login: function(email, password) {
                     switch(this.getType()) {
@@ -138,6 +140,7 @@ angular.module('trainapp.user')
                 clearSession: function() {
                     StorageService.remove('fbSession');
                     StorageService.remove('userSession');
+                    StorageService.remove('loginType');
                 }
             };
 

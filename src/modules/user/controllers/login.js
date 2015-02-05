@@ -47,7 +47,6 @@ angular.module('trainapp.user')
             $scope.login = function() {
                 AuthService.setType('website');
                 AuthService.login($scope.model.email, $scope.model.password);
-                window.console && window.console.log('website login');
             };
         }
     ]);

@@ -55,8 +55,6 @@ angular.module('trainapp', [
                         request: function ($config) {
                             //apply header auth only for REST API calls
                             if ((/\/api\//i).test($config.url)) {
-                                window.console && window.console.log($config.url);
-                                window.console && window.console.log($injector.get('AuthService').getXToken());
                                 $config.withCredentials = true;
                                 $config.headers['X-AUTH'] = $injector.get('AuthService').getXToken();
                             }
@@ -171,6 +169,9 @@ angular.module('trainapp', [
             $rootScope.$on('$stateChangeStart', function (event, next) {
                 $rootScope.globalLoading = true;
                 $rootScope.loggedIn = false;
+
+                var loginType = StorageService.get('loginType', 'fb');
+                AuthService.setType(loginType);
 
                 window.console && window.console.log(AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
