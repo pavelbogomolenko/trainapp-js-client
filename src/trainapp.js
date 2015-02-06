@@ -9,7 +9,7 @@ angular.module('trainapp', [
         'xeditable',
         'ngFacebook',
         'trainapp.user',
-        'trainapp.training'
+        'trainapp.program'
     ])
 
 /**
@@ -41,7 +41,8 @@ angular.module('trainapp', [
                 '$q',
                 '$injector',
                 '$timeout',
-                function ($q, $injector, $timeout) {
+                'HelperService',
+                function ($q, $injector, $timeout, HelperService) {
                     return {
                         responseError: function (response) {
                             console.log('responseError', response);

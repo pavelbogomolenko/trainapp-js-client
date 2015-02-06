@@ -10,7 +10,7 @@ angular.module('trainapp')
 
         return {
             restrict: 'E',
-            templateUrl: '/src/modules/training/directives/device-widget.html',
+            templateUrl: '/src/modules/program/directives/device-widget.html',
             scope: {
                 editable: '=',
                 device: '='

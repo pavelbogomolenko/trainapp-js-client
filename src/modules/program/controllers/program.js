@@ -1,4 +1,4 @@
-angular.module('trainapp.training')
+angular.module('trainapp.program')
 
     .config([
         '$stateProvider',
@@ -9,17 +9,17 @@ angular.module('trainapp.training')
                 .state('program', {
                     url: '/program',
                     controller: 'ProgramListCtrl',
-                    templateUrl: '/src/modules/training/partials/program-list.html'
+                    templateUrl: '/src/modules/program/partials/program-list.html'
                 })
                 .state('program-new', {
                     url: '/program-new',
                     controller: 'ProgramAddCtrl',
-                    templateUrl: '/src/modules/training/partials/program-create.html'
+                    templateUrl: '/src/modules/program/partials/program-create.html'
                 })
                 .state('program-edit', {
                     url: '/program-edit/:programId',
                     controller: 'ProgramEditCtrl',
-                    templateUrl: '/src/modules/training/partials/program-create.html'
+                    templateUrl: '/src/modules/program/partials/program-create.html'
                 });
         }
     ])
@@ -81,7 +81,8 @@ angular.module('trainapp.training')
 
     .controller('ProgramListCtrl', [
         '$scope',
-        function ($scope) {
+        'ProgramResource',
+        function ($scope, ProgramResource) {
             "use strict";
 
             /**
@@ -89,5 +90,7 @@ angular.module('trainapp.training')
              * @type {Object}
              */
             $scope.model = {};
+
+            $scope.programs = ProgramResource.list();
         }
     ]);

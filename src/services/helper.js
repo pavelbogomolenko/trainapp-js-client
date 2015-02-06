@@ -16,10 +16,10 @@ angular.module('trainapp')
             };
 
             /**
-             * Resolve promise and return an object containing additional information about promise
+             * Wraps promise with additional information about promise
              * @param promise
              */
-            this.resolvePromise = function (promise) {
+            this.wrapPromise = function (promise) {
                 var result = {};
                 if (this.isPromise(promise)) {
                     result.progress = true;
