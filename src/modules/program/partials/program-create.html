@@ -11,7 +11,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-4" ng-repeat="device in model.devices">
+        <div class="col-md-4" ng-repeat="device in model.program.devices">
             <device-widget device="device" editable="1"></device-widget>
         </div>
         <div class="col-md-4 dashed" ng-click="addDevice()">

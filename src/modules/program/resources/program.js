@@ -23,6 +23,14 @@ angular.module('trainapp.program')
                 return this.resource.query();
             };
 
+            ProgramResource.prototype.add = function (entity) {
+                var resourceEntity = this.getNewResource();
+
+                angular.extend(resourceEntity, entity);
+
+                return this.resource.save(resourceEntity);
+            };
+
             return new ProgramResource();
         }
     ]);

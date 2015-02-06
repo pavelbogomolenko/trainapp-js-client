@@ -26,7 +26,8 @@ angular.module('trainapp.program')
 
     .controller('ProgramAddCtrl', [
         '$scope',
-        function ($scope) {
+        'ProgramResource',
+        function ($scope, ProgramResource) {
             "use strict";
 
             /**
@@ -34,6 +35,20 @@ angular.module('trainapp.program')
              * @type {Object}
              */
             $scope.model = {};
+            $scope.model.program = {};
+            $scope.model.program.devices = [];
+
+            $scope.addDevice = function() {
+                $scope.model.program.devices.push({});
+            };
+
+            //init with one empty device
+            $scope.addDevice();
+
+            $scope.saveProgram = function() {
+                console.log('savimg program', $scope.model.program);
+                ProgramResource.add($scope.model.program);
+            };
         }
     ])
 
