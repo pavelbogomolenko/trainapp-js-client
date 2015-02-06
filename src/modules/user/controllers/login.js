@@ -41,7 +41,7 @@ angular.module('trainapp.user')
 
             $scope.fbLogin = function() {
                 AuthService.setType('fb');
-                AuthService.login();
+                window.console && window.console.log(AuthService.login());
             };
 
             $scope.login = function() {

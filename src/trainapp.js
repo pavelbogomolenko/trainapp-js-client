@@ -177,16 +177,22 @@ angular.module('trainapp', [
                 window.console && window.console.log(AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
-                    var fbSession = StorageService.get('fbSession', null);
-                    if(fbSession) {
-                        AuthService.loginFbUser(fbSession.email).then(function () {
-                            if (AuthService.getXToken()) {
-                                $rootScope.loggedIn = true;
-                            }
+
+                    if(AuthService.getType() === 'fb') {
+                        var fbSession = StorageService.get('fbSession', null);
+                        if(fbSession) {
+                            AuthService.loginFbUser(fbSession.email).then(function () {
+                                if (AuthService.getXToken()) {
+                                    $rootScope.loggedIn = true;
+                                }
+                                $rootScope.globalLoading = false;
+                            }, function (error) {
+                                console.log("error occured during loginFbUser", error);
+                            });
+                        } else {
+                            AuthService.logout();
                             $rootScope.globalLoading = false;
-                        }, function (error) {
-                            console.log("error occured during loginFbUser", error);
-                        });
+                        }
                     } else {
                         if (AuthService.getXToken()) {
                             $rootScope.loggedIn = true;
@@ -198,7 +204,7 @@ angular.module('trainapp', [
                     console.log("go to", next.name);
                 }, function (error) {
                     console.log("not logged in error", error);
-                    AuthService.clearSession();
+                    AuthService.logout();
                     $rootScope.globalLoading = false;
                 });
             });
