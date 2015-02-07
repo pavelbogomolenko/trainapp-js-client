@@ -21,31 +21,17 @@ angular.module('trainapp.user')
                  * @type {string}
                  */
                 this.type = 'fb';
-                this.AuthEvents = {
-                    loginSuccess: 'loginSuccess',
-                    loginFailed: 'loginFailed',
-                    logoutSuccess: 'logoutSuccess',
-                    sessionTimeout: 'sessionTimeout',
-                    notAuthenticated: 'notAuthenticated',
-                    notAuthorized: 'notAuthorized'
-                };
 
                 var self = this;
 
                 $rootScope.$on('fb.auth.logout', function(e, rsp) {
-                    console.log('fb.auth.logout');
+                    window.console && window.console.log('fb.auth.logout');
                     self.clearSession();
                 });
 
                 $rootScope.$on('fb.auth.login', function(e, rsp) {
-                    console.log('fb.auth.login');
-                    $facebook.cachedApi('/me').then(function(fbUserResponse) {
-                        StorageService.set('fbSession', fbUserResponse);
-                        //force current state to reload in order to pass through $stateChangeStart checks
-                        $state.reload();
-                    }, function(error) {
-                        console.log("error cachedApi", error);
-                    });
+                    window.console && window.console.log('fb.auth.login');
+                    self.getFbProfileForLogin();
                 });
 
                 $rootScope.$on('loginSuccess', function(e, rsp) {
@@ -96,7 +82,7 @@ angular.module('trainapp.user')
                             }
                             break;
                         default:
-                            throw new Exception(th.getType() + " authorization not supported");
+                            throw this.getType() + " authorization not supported";
                     }
                     return deferred.promise;
                 },
@@ -130,17 +116,30 @@ angular.module('trainapp.user')
                             });
                             break;
                         default:
-                            throw new Exception(this.getType() + " authorization not supported");
+                            throw this.getType() + " authorization not supported";
                     }
                 },
                 getXToken: function(){
                     var userSession = StorageService.get('userSession', {});
-                    return userSession['sessionId'];
+                    return userSession.sessionId;
                 },
                 clearSession: function() {
                     StorageService.remove('fbSession');
                     StorageService.remove('userSession');
                     StorageService.remove('loginType');
+                },
+                /**
+                 * get user profile data from FB for login
+                 * save it in local storage and reload current state to go through auth process
+                 */
+                getFbProfileForLogin: function() {
+                    $facebook.cachedApi('/me').then(function(fbUserResponse) {
+                        StorageService.set('fbSession', fbUserResponse);
+                        //force current state to reload in order to pass through $stateChangeStart checks
+                        $state.reload();
+                    }, function(error) {
+                        window.console && window.console.log("error getFbProfileForLogin", error);
+                    });
                 }
             };
 

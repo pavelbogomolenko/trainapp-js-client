@@ -187,8 +187,10 @@ angular.module('trainapp', [
                                 }
                             }, function (error) {
                                 window.console && window.console.log("error occured during loginFbUser", error);
+                                AuthService.logout();
                             });
                         } else {
+                            //try to get fb user profile data and reload state
                             AuthService.logout();
                         }
                     } else {
@@ -199,7 +201,7 @@ angular.module('trainapp', [
                     $rootScope.globalLoading = false;
                 }, function (error) {
                     window.console && window.console.log("not logged in error or smth went wrong", error);
-                    AuthService.logout();
+                    //AuthService.logout();
                     $rootScope.globalLoading = false;
                 });
             });
