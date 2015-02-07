@@ -6,6 +6,7 @@ angular.module('trainapp')
             "use strict";
 
             /**
+             * Base for any resource in application
              *
              * @constructor
              */
@@ -16,11 +17,20 @@ angular.module('trainapp')
                 this.resource = $resource(appConfig.apiPrefix + resourceName);
             }
 
+            /**
+             * Creates empty resource object
+             * @returns {this.resource}
+             */
             BaseResource.prototype.getResourceEntity = function() {
-                window.console && window.console.log('call getNewResource', this);
                 return new this.resource();
             };
 
+            /**
+             * Method used to simplify prototype inheritance
+             *
+             * @param target
+             * @param source
+             */
             BaseResource.inherit = function(target, source) {
                 target.prototype = Object.create(source.prototype);
                 target.prototype.constructor = target;

@@ -25,7 +25,6 @@ angular.module('trainapp.user')
                 return this.resource.save(resourceEntity);
             };
 
-
             return new WebsiteLoginResource();
         }
     ]);

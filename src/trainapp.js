@@ -153,7 +153,7 @@ angular.module('trainapp', [
     ])
 
 /**
- * Handle authentification
+ * Handle authentification. Website + FB
  */
     .run([
         'appConfig',

@@ -22,7 +22,6 @@ angular.module('trainapp.user')
                 return this.resource.get();
             };
 
-
             return new IsWebsiteLoginResource();
         }
     ]);
