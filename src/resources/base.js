@@ -16,7 +16,7 @@ angular.module('trainapp')
                 this.resource = $resource(appConfig.apiPrefix + resourceName);
             }
 
-            BaseResource.prototype.getNewResource = function() {
+            BaseResource.prototype.getResourceEntity = function() {
                 window.console && window.console.log('call getNewResource', this);
                 return new this.resource();
             };

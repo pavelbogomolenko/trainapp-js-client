@@ -15,7 +15,6 @@ angular.module('trainapp.program')
              */
             function ProgramResource() {
                 var resourceName = 'program';
-
                 ProgramResource.parent.call(this, resourceName);
             }
 
@@ -24,10 +23,8 @@ angular.module('trainapp.program')
             };
 
             ProgramResource.prototype.add = function (entity) {
-                var resourceEntity = this.getNewResource();
-
+                var resourceEntity = this.getResourceEntity();
                 angular.extend(resourceEntity, entity);
-
                 return this.resource.save(resourceEntity);
             };
 

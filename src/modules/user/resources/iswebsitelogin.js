@@ -15,7 +15,6 @@ angular.module('trainapp.user')
              */
             function IsWebsiteLoginResource() {
                 var resourceName = 'islogin';
-
                 IsWebsiteLoginResource.parent.call(this, resourceName);
             }
 
