@@ -174,7 +174,7 @@ angular.module('trainapp', [
                 var loginType = StorageService.get('loginType', 'fb');
                 AuthService.setType(loginType);
 
-                window.console && window.console.log(AuthService.getType());
+                window.console && window.console.log('loginType:', AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
 
@@ -185,25 +185,20 @@ angular.module('trainapp', [
                                 if (AuthService.getXToken()) {
                                     $rootScope.loggedIn = true;
                                 }
-                                $rootScope.globalLoading = false;
                             }, function (error) {
-                                console.log("error occured during loginFbUser", error);
+                                window.console && window.console.log("error occured during loginFbUser", error);
                             });
                         } else {
                             AuthService.logout();
-                            $rootScope.globalLoading = false;
                         }
                     } else {
                         if (AuthService.getXToken()) {
                             $rootScope.loggedIn = true;
                         }
-                        $rootScope.globalLoading = false;
                     }
-
-                    console.log("globalLoading",  $rootScope.globalLoading);
-                    console.log("go to", next.name);
+                    $rootScope.globalLoading = false;
                 }, function (error) {
-                    console.log("not logged in error", error);
+                    window.console && window.console.log("not logged in error or smth went wrong", error);
                     AuthService.logout();
                     $rootScope.globalLoading = false;
                 });
