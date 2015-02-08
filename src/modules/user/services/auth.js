@@ -8,7 +8,9 @@ angular.module('trainapp.user')
         'FbloginResource',
         'IsWebsiteLoginResource',
         'WebsiteLoginResource',
-        function($q, $state, $facebook, $rootScope, StorageService, FbloginResource, IsWebsiteLoginResource, WebsiteLoginResource) {
+        'WebsiteLogoutResource',
+        function($q, $state, $facebook, $rootScope, StorageService, FbloginResource,
+                 IsWebsiteLoginResource, WebsiteLoginResource, WebsiteLogoutResource) {
             "use strict";
 
             /**
@@ -26,7 +28,7 @@ angular.module('trainapp.user')
 
                 $rootScope.$on('fb.auth.logout', function(e, rsp) {
                     window.console && window.console.log('fb.auth.logout');
-                    self.clearSession();
+                    $rootScope.loggedIn = false;
                 });
 
                 $rootScope.$on('fb.auth.login', function(e, rsp) {
@@ -34,9 +36,14 @@ angular.module('trainapp.user')
                     self.getFbProfileForLogin();
                 });
 
-                $rootScope.$on('loginSuccess', function(e, rsp) {
+                $rootScope.$on('loginSuccess', function() {
                     window.console && window.console.log('website loginSuccess');
                     $state.reload();
+                });
+
+                $rootScope.$on('logoutSuccess', function() {
+                    window.console && window.console.log('website logoutSuccess');
+                    $rootScope.loggedIn = false;
                 });
             }
 
@@ -99,8 +106,20 @@ angular.module('trainapp.user')
                     return deferred.promise;
                 },
                 logout: function() {
-                    $facebook.logout();
-                    this.clearSession();
+                    var self = this;
+                    switch(this.getType()) {
+                        case 'fb':
+                            //in case of fb logout we need to logout both tmp website user and fb logout
+                            return $q.all([$facebook.logout(), WebsiteLogoutResource.logout()]).then(function () {
+                                $rootScope.$broadcast('logoutSuccess');
+                                self.clearSession();
+                            });
+                        case 'website':
+                            return WebsiteLogoutResource.logout().$promise.then(function (){
+                                $rootScope.$broadcast('logoutSuccess');
+                                self.clearSession();
+                            });
+                    }
                 },
                 login: function(email, password) {
                     switch(this.getType()) {

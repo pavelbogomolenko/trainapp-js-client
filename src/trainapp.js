@@ -168,13 +168,14 @@ angular.module('trainapp', [
              * Listen to state changes
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
+                window.console && window.console.log(next.name);
+
                 $rootScope.globalLoading = true;
                 $rootScope.loggedIn = false;
 
                 var loginType = StorageService.get('loginType', 'fb');
                 AuthService.setType(loginType);
 
-                window.console && window.console.log('loginType:', AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
 
@@ -184,21 +185,24 @@ angular.module('trainapp', [
                             AuthService.loginFbUser(fbSession.email).then(function () {
                                 if (AuthService.getXToken()) {
                                     $rootScope.loggedIn = true;
+                                    $rootScope.globalLoading = false;
                                 }
                             }, function (error) {
                                 window.console && window.console.log("error occured during loginFbUser", error);
                                 AuthService.logout();
+                                $rootScope.globalLoading = false;
                             });
                         } else {
                             //try to get fb user profile data and reload state
                             AuthService.logout();
+                            $rootScope.globalLoading = false;
                         }
                     } else {
                         if (AuthService.getXToken()) {
                             $rootScope.loggedIn = true;
                         }
+                        $rootScope.globalLoading = false;
                     }
-                    $rootScope.globalLoading = false;
                 }, function (error) {
                     window.console && window.console.log("not logged in error or smth went wrong", error);
                     //AuthService.logout();
