@@ -11,6 +11,20 @@ angular.module('trainapp.program')
                     controller: 'ProgramListCtrl',
                     templateUrl: '/src/modules/program/partials/program-list.html'
                 })
+                .state('program-detail', {
+                    url: '/program/{programId:[0-9a-zA-Z]+}',
+                    controller: 'ProgramDetailCtrl',
+                    templateUrl: '/src/modules/program/partials/program-detail.html',
+                    resolve: {
+                        program: [
+                            '$stateParams',
+                            'ProgramResource',
+                            function ($stateParams, ProgramResource) {
+                                return ProgramResource.getOneById($stateParams.programId);
+                            }
+                        ]
+                    }
+                })
                 .state('program-new', {
                     url: '/program-new',
                     controller: 'ProgramAddCtrl',
@@ -46,7 +60,9 @@ angular.module('trainapp.program')
             $scope.addDevice();
 
             $scope.saveProgram = function() {
-                console.log('savimg program', $scope.model.program);
+                console.log('saving program');
+                console.log($scope.model.program);
+
                 ProgramResource.add($scope.model.program);
             };
         }
@@ -76,7 +92,7 @@ angular.module('trainapp.program')
             };
 
             $scope.saveProgram = function() {
-                console.log('savimg program', $scope.model.devices);
+                console.log('saving program', $scope.model.devices);
             };
 
             $scope.model.devices = [
@@ -107,5 +123,22 @@ angular.module('trainapp.program')
             $scope.model = {};
 
             $scope.programs = ProgramResource.list();
+        }
+    ])
+
+    .controller('ProgramDetailCtrl', [
+        '$scope',
+        'program',
+        function ($scope, program) {
+            "use strict";
+
+            /**
+             * Namespace for login data
+             * @type {Object}
+             */
+            $scope.model = {};
+            $scope.model.program = {};
+
+            $scope.model.program = program;
         }
     ]);

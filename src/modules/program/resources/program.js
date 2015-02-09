@@ -14,9 +14,13 @@ angular.module('trainapp.program')
              * @constructor
              */
             function ProgramResource() {
-                var resourceName = 'program';
+                var resourceName = 'program/?id=:id';
                 ProgramResource.parent.call(this, resourceName);
             }
+
+            ProgramResource.prototype.getOneById = function (id) {
+                return this.resource.query({ id: id });
+            };
 
             ProgramResource.prototype.list = function () {
                 return this.resource.query();

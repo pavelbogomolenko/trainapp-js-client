@@ -143,7 +143,7 @@ angular.module('trainapp', [
             $rootScope.$on('$stateChangeError', function (event, toScope, toScopeParams, fromScope, fromScopeParams, error) {
                 console.log('$stateChangeError');
                 $rootScope.httpStatusCode = typeof error.status === 'undefined' || error.status === 0 ? 500 : error.status;
-                console.log($rootScope.httpStatusCode);
+                console.log(error);
             });
             $rootScope.$on('$stateNotFound', function () {
                 console.log('$stateNotFound');
