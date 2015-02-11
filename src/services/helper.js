@@ -7,33 +7,36 @@ angular.module('trainapp')
             "use strict";
 
             /**
-             * Check whether given obj
+             * Check whether given obj is promise
+             *
              * @param obj
              * @returns {boolean}
              */
             this.isPromise = function (obj) {
-                return obj instanceof Object && typeof obj.then === 'function' && typeof obj.finally === 'function';
+                return typeof obj.then === 'function';
             };
 
             /**
-             * Wraps promise with additional information about promise
+             * Enrich response with additional status attributes
+             *
              * @param promise
+             * @returns {{}}
              */
             this.wrapPromise = function (promise) {
                 var result = {};
                 if (this.isPromise(promise)) {
-                    result.progress = true;
-                    result.finished = false;
+                    result.loading = true;
+                    result.loaded = false;
                     promise.then(function () {
-                        result.progress = false;
-                        result.finished = true;
-                        result.resolved = true;
-                        result.rejected = false;
-                    }, function () {
-                        result.progress = false;
-                        result.finished = true;
-                        result.resolved = false;
-                        result.rejected = true;
+                        result.loading = false;
+                        result.loaded = true;
+                        result.success = true;
+                        result[200] = true;
+                    }, function (errorResponse) {
+                        result.loading = false;
+                        result.loaded = true;
+                        result.success = false;
+                        result[errorResponse.status] = true;
                     });
                 }
                 return result;

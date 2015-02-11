@@ -1,7 +1,9 @@
 <div class="container">
-    <div class="row text-center" ng-repeat="program in programs">
-        <a ui-sref="program-detail({ programId: program._id })" class="btn btn-info btn-lg">{{ ::program.title }}</a>
-    </div>
+    <data-loader data="programs">
+        <div class="row text-center" ng-repeat="program in programs">
+            <a ui-sref="program-detail({ programId: program._id })" class="btn btn-info btn-lg">{{ ::program.title }}</a>
+        </div>
+    </data-loader>
     <div class="row text-center">
         <a ui-sref="program-new"><i class="fa fa-plus fa-3x"></i></a>
     </div>
