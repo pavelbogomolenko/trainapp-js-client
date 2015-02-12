@@ -1,23 +1,25 @@
-<div class="container">
-    <div class="pull-left">
+<data-loader data="program">
+    <div class="container">
         <div class="pull-left">
-            <h3><a href="#">{{ ::model.program[0].title }}</a></h3>
+            <div class="pull-left">
+                <h3><a href="#">{{ ::model.program[0].title }}</a></h3>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-4" ng-repeat="device in model.program[0].devices">
-            <device-widget device="device" editable="0"></device-widget>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4" ng-repeat="device in model.program[0].devices">
+                <device-widget device="device" editable="0"></device-widget>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <button class="btn btn-info btn-lg" ng-click="saveProgram()">Save</button>
-        <button class="btn btn-warning btn-lg">Cancel</button>
+    <div class="container">
+        <div class="row">
+            <button class="btn btn-info btn-lg" ng-click="saveProgram()">Save</button>
+            <button class="btn btn-warning btn-lg">Cancel</button>
+        </div>
+        <!--<button class="btn btn-warning btn-lg" type="submit">Stop training</button>-->
     </div>
-    <!--<button class="btn btn-warning btn-lg" type="submit">Stop training</button>-->
-</div>
+</data-loader>

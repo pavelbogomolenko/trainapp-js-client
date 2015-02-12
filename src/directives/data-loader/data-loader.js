@@ -15,12 +15,11 @@ angular.module('trainapp')
                     data: '='
                 },
                 link: function ($scope, $element, $attrs) {
-
+                    
                     function checkPromise() {
                         var promise = $scope.data.$promise;
                         $scope.status = HelperService.wrapPromise(promise);
                     }
-
 
                     /**
                      * Watch for content promise changes
