@@ -50,8 +50,17 @@ angular.module('trainapp', [
                                 $timeout(function () {
                                     $injector.get('AuthService').logout();
                                 }, 0);
+                                return $q.reject(response);
+                            } else {
+                                return HelperService.wrapPromise(response, response);
                             }
-                            return $q.reject(response);
+                        },
+                        response: function(response, etc) {
+                            if ((/\/api\//i).test(response.config.url)) {
+                                return HelperService.wrapPromise(response, response);
+                            } else {
+                                return response;
+                            }
                         },
                         request: function ($config) {
                             //apply header auth only for REST API calls

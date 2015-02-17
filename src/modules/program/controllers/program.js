@@ -123,6 +123,7 @@ angular.module('trainapp.program')
             $scope.model = {};
 
             $scope.programs = ProgramResource.list();
+            window.console && window.console.log($scope.programs);
         }
     ])
 
