@@ -2,7 +2,7 @@
  * Directive that helps working with promises
  */
 angular.module('trainapp')
-    .directive('dataLoader', [
+    .directive('trainappLoader', [
         'HelperService',
         function (HelperService) {
             "use strict";
@@ -12,19 +12,20 @@ angular.module('trainapp')
                 transclude: true,
                 templateUrl: '/src/directives/data-loader/data-loader.html',
                 scope: {
-                    data: '='
+                    datasource: '='
                 },
                 link: function ($scope, $element, $attrs) {
-                    
+
+
                     function checkPromise() {
-                        var promise = $scope.data.$promise;
-                        $scope.status = HelperService.wrapPromise(promise);
+                        var promise = $scope.datasource.$promise;
+                        $scope.status = HelperService.extendPromise(promise, promise);
                     }
 
                     /**
-                     * Watch for content promise changes
-                     */
-                    $scope.$watch('data.$promise', checkPromise);
+                    * Watch for content promise changes
+                    */
+                    $scope.$watch('datasource.$promise', checkPromise);
                 }
             };
         }

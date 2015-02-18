@@ -17,9 +17,11 @@ angular.module('trainapp.program')
                     templateUrl: '/src/modules/program/partials/program-detail.html',
                     resolve: {
                         program: [
+                            '$q',
+                            '$timeout',
                             '$stateParams',
                             'ProgramResource',
-                            function ($stateParams, ProgramResource) {
+                            function ($q, $timeout, $stateParams, ProgramResource) {
                                 return ProgramResource.getOneById($stateParams.programId);
                             }
                         ]
@@ -113,7 +115,8 @@ angular.module('trainapp.program')
     .controller('ProgramListCtrl', [
         '$scope',
         'ProgramResource',
-        function ($scope, ProgramResource) {
+        'StorageService',
+        function ($scope, ProgramResource, StorageService) {
             "use strict";
 
             /**
@@ -123,7 +126,7 @@ angular.module('trainapp.program')
             $scope.model = {};
 
             $scope.programs = ProgramResource.list();
-            window.console && window.console.log($scope.programs);
+            //StorageService.set('programs', $scope.programs.$promise);
         }
     ])
 

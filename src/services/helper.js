@@ -22,21 +22,17 @@ angular.module('trainapp')
              * @param promise
              * @returns {{}}
              */
-            this.wrapPromise = function (promise, result) {
+            this.extendPromise = function (promise, result) {
                 result = result instanceof Object ? result : {};
                 if (this.isPromise(promise)) {
-                    window.console && window.console.log('ispromise');
                     result.loading = true;
                     result.loaded = false;
                     promise.then(function (response) {
-                        result.data = response;
                         result.loading = false;
                         result.loaded = true;
                         result.success = true;
-                        result[200] = true;
                         window.console && window.console.log(result);
                     }, function (errorResponse) {
-                        result.data = errorResponse;
                         result.loading = false;
                         result.loaded = true;
                         result.success = false;

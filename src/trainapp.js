@@ -52,15 +52,11 @@ angular.module('trainapp', [
                                 }, 0);
                                 return $q.reject(response);
                             } else {
-                                return HelperService.wrapPromise(response, response);
+                                return HelperService.extendPromise(response, response);
                             }
                         },
                         response: function(response, etc) {
-                            if ((/\/api\//i).test(response.config.url)) {
-                                return HelperService.wrapPromise(response, response);
-                            } else {
-                                return response;
-                            }
+                            return HelperService.extendPromise(response, response);
                         },
                         request: function ($config) {
                             //apply header auth only for REST API calls
