@@ -19,7 +19,7 @@ angular.module('trainapp.user')
             }
 
             WebsiteLogoutResource.prototype.logout = function () {
-                return this.resource.save(this.getResourceEntity());
+                return this.save();
             };
 
             return new WebsiteLogoutResource();

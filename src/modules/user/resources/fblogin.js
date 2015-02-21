@@ -19,9 +19,7 @@ angular.module('trainapp.user')
             }
 
             FbloginResource.prototype.fblogin = function (email) {
-                var resourceEntity = this.getResourceEntity();
-                resourceEntity.email = email;
-                return this.resource.save(resourceEntity);
+                return this.save({email:email});
             };
 
             return new FbloginResource();

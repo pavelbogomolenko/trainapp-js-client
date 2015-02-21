@@ -19,7 +19,7 @@ angular.module('trainapp.user')
             }
 
             IsWebsiteLoginResource.prototype.getLoginStatus = function () {
-                return this.resource.get();
+                return this.get();
             };
 
             return new IsWebsiteLoginResource();

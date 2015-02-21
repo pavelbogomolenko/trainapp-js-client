@@ -10,11 +10,14 @@ angular.module('trainapp')
              *
              * @constructor
              */
-            function BaseResource (resourceName) {
+            function BaseResource (resourceName, params) {
                 if(resourceName === '') {
-                    throw 'resourceName is not set!'
+                    throw 'resourceName is not set!';
                 }
-                this.resource = $resource(appConfig.apiPrefix + resourceName);
+                this.resourceName = resourceName;
+                this.params = params;
+                var fullResourceName = params !== '' ? this.resourceName + '/' + this.params : this.resourceName;
+                this.resource = $resource(appConfig.apiPrefix + fullResourceName);
             }
 
             /**
@@ -23,6 +26,36 @@ angular.module('trainapp')
              */
             BaseResource.prototype.getResourceEntity = function() {
                 return new this.resource();
+            };
+
+            /**
+             * save entity
+             *
+             * @param entity
+             * @returns {*}
+             */
+            BaseResource.prototype.save = function (entity) {
+                var resourceEntity = this.getResourceEntity();
+                angular.extend(resourceEntity, entity || {});
+                return this.resource.save(resourceEntity);
+            };
+
+            /**
+             * Triggers get request and expect response data to be array
+             * @param queryObject
+             * @returns {*}
+             */
+            BaseResource.prototype.query = function (queryObject) {
+                return this.resource.query(queryObject || {});
+            };
+
+            /**
+             * Triggers get request and expect response data to be object
+             * @param queryObject
+             * @returns {*}
+             */
+            BaseResource.prototype.get = function (queryObject) {
+                return this.resource.get(queryObject || {});
             };
 
             /**

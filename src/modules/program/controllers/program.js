@@ -41,9 +41,10 @@ angular.module('trainapp.program')
     ])
 
     .controller('ProgramAddCtrl', [
+        '$rootScope',
         '$scope',
         'ProgramResource',
-        function ($scope, ProgramResource) {
+        function ($rootScope, $scope, ProgramResource) {
             "use strict";
 
             /**
@@ -56,6 +57,14 @@ angular.module('trainapp.program')
 
             $scope.addDevice = function() {
                 $scope.model.program.devices.push({});
+            };
+
+            $rootScope.removeDevice = function(device) {
+                var deviceId = device._id ? device._id : device.$$hashKey;
+                var deviceIndex = _.findIndex($scope.model.program.devices, function (d) {
+                    return  d._id === deviceId || d.$$hashKey === deviceId;
+                });
+                $scope.model.program.devices.splice(deviceIndex, 1);
             };
 
             //init with one empty device
@@ -115,8 +124,8 @@ angular.module('trainapp.program')
     .controller('ProgramListCtrl', [
         '$scope',
         'ProgramResource',
-        'StorageService',
-        function ($scope, ProgramResource, StorageService) {
+        'HelperService',
+        function ($scope, ProgramResource, HelperService) {
             "use strict";
 
             /**
@@ -126,7 +135,7 @@ angular.module('trainapp.program')
             $scope.model = {};
 
             $scope.programs = ProgramResource.list();
-            //StorageService.set('programs', $scope.programs.$promise);
+            HelperService.serializeResourcePromise($scope.programs, 'programs');
         }
     ])
 

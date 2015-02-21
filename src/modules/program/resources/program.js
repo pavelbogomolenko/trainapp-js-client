@@ -14,22 +14,20 @@ angular.module('trainapp.program')
              * @constructor
              */
             function ProgramResource() {
-                var resourceName = 'program/?id=:id';
-                ProgramResource.parent.call(this, resourceName);
+                var resourceName = 'program';
+                ProgramResource.parent.call(this, resourceName, '?id=:id');
             }
 
             ProgramResource.prototype.getOneById = function (id) {
-                return this.resource.query({ id: id });
+                return this.query({ id: id });
             };
 
             ProgramResource.prototype.list = function () {
-                return this.resource.query();
+                return this.query();
             };
 
             ProgramResource.prototype.add = function (entity) {
-                var resourceEntity = this.getResourceEntity();
-                angular.extend(resourceEntity, entity);
-                return this.resource.save(resourceEntity);
+                return this.save(entity);
             };
 
             return new ProgramResource();

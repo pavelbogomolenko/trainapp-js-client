@@ -19,10 +19,7 @@ angular.module('trainapp.user')
             }
 
             WebsiteLoginResource.prototype.login = function (email, password) {
-                var resourceEntity = this.getResourceEntity();
-                resourceEntity.email = email;
-                resourceEntity.password = password;
-                return this.resource.save(resourceEntity);
+                return this.save({email: email, password: password});
             };
 
             return new WebsiteLoginResource();

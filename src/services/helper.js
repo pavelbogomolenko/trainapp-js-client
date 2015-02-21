@@ -3,7 +3,8 @@
  */
 angular.module('trainapp')
     .service('HelperService', [
-        function () {
+        'StorageService',
+        function (StorageService) {
             "use strict";
 
             /**
@@ -40,6 +41,30 @@ angular.module('trainapp')
                     });
                 }
                 return result;
+            };
+
+            /**
+             * serialize resource
+             *
+             * @param resource
+             */
+            this.serializeResourcePromise = function (resource, name) {
+                if(this.isPromise(resource.$promise)) {
+                    resource.$promise.then(function (data) {
+                        var obj = _.map(data, function (d) {
+                            return d;
+                        });
+                        StorageService.set(name, obj);
+                    });
+                }
+            };
+
+            /**
+             * de-serialize resource
+             * @param name
+             */
+            this.deserializeResourcePromise = function (name) {
+                return StorageService.get(name);
             };
         }
     ]);
