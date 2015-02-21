@@ -15,17 +15,12 @@ angular.module('trainapp.user')
              */
             function WebsiteLoginResource() {
                 var resourceName = 'login';
-
                 WebsiteLoginResource.parent.call(this, resourceName);
             }
 
             WebsiteLoginResource.prototype.login = function (email, password) {
-                var resourceEntity = this.getNewResource();
-                resourceEntity.email = email;
-                resourceEntity.password = password;
-                return this.resource.save(resourceEntity);
+                return this.save({email: email, password: password});
             };
-
 
             return new WebsiteLoginResource();
         }

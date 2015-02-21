@@ -15,14 +15,11 @@ angular.module('trainapp.user')
              */
             function FbloginResource() {
                 var resourceName = 'fblogin';
-
                 FbloginResource.parent.call(this, resourceName);
             }
 
             FbloginResource.prototype.fblogin = function (email) {
-                var resourceEntity = this.getNewResource();
-                resourceEntity.email = email;
-                return this.resource.save(resourceEntity);
+                return this.save({email:email});
             };
 
             return new FbloginResource();

@@ -1,0 +1,14 @@
+<span ng-if="status[400] || status.undefined" class="label label-danger">400 Bad request</span>
+<span ng-if="status[403]" class="label label-danger">403 Forbidden</span>
+<span ng-if="status[404]" class="label label-danger">404 Not Found</span>
+<span ng-if="status[408]" class="label label-danger">408 Request Timeout</span>
+<div ng-if="status.loading">
+    <div class="container">
+        <div class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+    </div>
+</div>
+<div ng-if="status.success" ng-transclude></div>

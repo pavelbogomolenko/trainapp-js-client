@@ -3,40 +3,68 @@
  */
 angular.module('trainapp')
     .service('HelperService', [
-        function () {
+        'StorageService',
+        function (StorageService) {
             "use strict";
 
             /**
-             * Check whether given obj
+             * Check whether given obj is promise
+             *
              * @param obj
              * @returns {boolean}
              */
             this.isPromise = function (obj) {
-                return obj instanceof Object && typeof obj.then === 'function' && typeof obj.finally === 'function';
+                return typeof obj.then === 'function';
             };
 
             /**
-             * Resolve promise and return an object containing additional information about promise
+             * Enrich response with additional status attributes
+             *
              * @param promise
+             * @returns {{}}
              */
-            this.resolvePromise = function (promise) {
-                var result = {};
+            this.extendPromise = function (promise, result) {
+                result = result instanceof Object ? result : {};
                 if (this.isPromise(promise)) {
-                    result.progress = true;
-                    result.finished = false;
-                    promise.then(function () {
-                        result.progress = false;
-                        result.finished = true;
-                        result.resolved = true;
-                        result.rejected = false;
-                    }, function () {
-                        result.progress = false;
-                        result.finished = true;
-                        result.resolved = false;
-                        result.rejected = true;
+                    result.loading = true;
+                    result.loaded = false;
+                    promise.then(function (response) {
+                        result.loading = false;
+                        result.loaded = true;
+                        result.success = true;
+                        window.console && window.console.log(result);
+                    }, function (errorResponse) {
+                        result.loading = false;
+                        result.loaded = true;
+                        result.success = false;
+                        result[errorResponse.status] = true;
                     });
                 }
                 return result;
+            };
+
+            /**
+             * serialize resource
+             *
+             * @param resource
+             */
+            this.serializeResourcePromise = function (resource, name) {
+                if(this.isPromise(resource.$promise)) {
+                    resource.$promise.then(function (data) {
+                        var obj = _.map(data, function (d) {
+                            return d;
+                        });
+                        StorageService.set(name, obj);
+                    });
+                }
+            };
+
+            /**
+             * de-serialize resource
+             * @param name
+             */
+            this.deserializeResourcePromise = function (name) {
+                return StorageService.get(name);
             };
         }
     ]);

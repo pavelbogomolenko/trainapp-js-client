@@ -9,7 +9,7 @@ angular.module('trainapp', [
         'xeditable',
         'ngFacebook',
         'trainapp.user',
-        'trainapp.training'
+        'trainapp.program'
     ])
 
 /**
@@ -41,7 +41,8 @@ angular.module('trainapp', [
                 '$q',
                 '$injector',
                 '$timeout',
-                function ($q, $injector, $timeout) {
+                'HelperService',
+                function ($q, $injector, $timeout, HelperService) {
                     return {
                         responseError: function (response) {
                             console.log('responseError', response);
@@ -49,8 +50,13 @@ angular.module('trainapp', [
                                 $timeout(function () {
                                     $injector.get('AuthService').logout();
                                 }, 0);
+                                return $q.reject(response);
+                            } else {
+                                return HelperService.extendPromise(response, response);
                             }
-                            return $q.reject(response);
+                        },
+                        response: function(response, etc) {
+                            return HelperService.extendPromise(response, response);
                         },
                         request: function ($config) {
                             //apply header auth only for REST API calls
@@ -142,7 +148,7 @@ angular.module('trainapp', [
             $rootScope.$on('$stateChangeError', function (event, toScope, toScopeParams, fromScope, fromScopeParams, error) {
                 console.log('$stateChangeError');
                 $rootScope.httpStatusCode = typeof error.status === 'undefined' || error.status === 0 ? 500 : error.status;
-                console.log($rootScope.httpStatusCode);
+                console.log(error);
             });
             $rootScope.$on('$stateNotFound', function () {
                 console.log('$stateNotFound');
@@ -152,7 +158,7 @@ angular.module('trainapp', [
     ])
 
 /**
- * Handle authentification
+ * Handle authentification. Website + FB
  */
     .run([
         'appConfig',
@@ -167,37 +173,44 @@ angular.module('trainapp', [
              * Listen to state changes
              */
             $rootScope.$on('$stateChangeStart', function (event, next) {
+                window.console && window.console.log(next.name);
+
                 $rootScope.globalLoading = true;
                 $rootScope.loggedIn = false;
 
                 var loginType = StorageService.get('loginType', 'fb');
                 AuthService.setType(loginType);
 
-                window.console && window.console.log(AuthService.getType());
                 AuthService.isLoggedIn().then(function (response) {
                     console.log("success", response);
-                    var fbSession = StorageService.get('fbSession', null);
-                    if(fbSession) {
-                        AuthService.loginFbUser(fbSession.email).then(function () {
-                            if (AuthService.getXToken()) {
-                                $rootScope.loggedIn = true;
-                            }
+
+                    if(AuthService.getType() === 'fb') {
+                        var fbSession = StorageService.get('fbSession', null);
+                        if(fbSession) {
+                            AuthService.loginFbUser(fbSession.email).then(function () {
+                                if (AuthService.getXToken()) {
+                                    $rootScope.loggedIn = true;
+                                    $rootScope.globalLoading = false;
+                                }
+                            }, function (error) {
+                                window.console && window.console.log("error occured during loginFbUser", error);
+                                AuthService.logout();
+                                $rootScope.globalLoading = false;
+                            });
+                        } else {
+                            //try to get fb user profile data and reload state
+                            AuthService.logout();
                             $rootScope.globalLoading = false;
-                        }, function (error) {
-                            console.log("error occured during loginFbUser", error);
-                        });
+                        }
                     } else {
                         if (AuthService.getXToken()) {
                             $rootScope.loggedIn = true;
                         }
                         $rootScope.globalLoading = false;
                     }
-
-                    console.log("globalLoading",  $rootScope.globalLoading);
-                    console.log("go to", next.name);
                 }, function (error) {
-                    console.log("not logged in error", error);
-                    AuthService.clearSession();
+                    window.console && window.console.log("not logged in error or smth went wrong", error);
+                    //AuthService.logout();
                     $rootScope.globalLoading = false;
                 });
             });

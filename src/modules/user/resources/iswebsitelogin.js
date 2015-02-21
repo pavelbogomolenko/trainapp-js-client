@@ -15,14 +15,12 @@ angular.module('trainapp.user')
              */
             function IsWebsiteLoginResource() {
                 var resourceName = 'islogin';
-
                 IsWebsiteLoginResource.parent.call(this, resourceName);
             }
 
             IsWebsiteLoginResource.prototype.getLoginStatus = function () {
-                return this.resource.get();
+                return this.get();
             };
-
 
             return new IsWebsiteLoginResource();
         }

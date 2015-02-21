@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
-    files = require('./files.json');
+    files = require('./files.json'),
+    del = require('del');
 
 /**
  *  Runs all JS file through JsHint tool.
@@ -29,8 +30,15 @@ gulp.task('dev', ['jshint'], function () {
         respond = require('gulp-respond'),
         inject = require("gulp-inject");
 
+    var webFolder = 'web';
+
+    /**
+     * clean folder
+     */
+    del(webFolder);
+
     connect.server({
-        root: ['web'],
+        root: [webFolder],
         port: 8000,
         livereload: true,
         fallback: 'index.html',
