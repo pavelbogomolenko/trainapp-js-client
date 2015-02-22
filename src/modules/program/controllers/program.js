@@ -14,18 +14,7 @@ angular.module('trainapp.program')
                 .state('program-detail', {
                     url: '/program/{programId:[0-9a-zA-Z]+}',
                     controller: 'ProgramDetailCtrl',
-                    templateUrl: '/src/modules/program/partials/program-detail.html',
-                    resolve: {
-                        program: [
-                            '$q',
-                            '$timeout',
-                            '$stateParams',
-                            'ProgramResource',
-                            function ($q, $timeout, $stateParams, ProgramResource) {
-                                return ProgramResource.getOneById($stateParams.programId);
-                            }
-                        ]
-                    }
+                    templateUrl: '/src/modules/program/partials/program-detail.html'
                 })
                 .state('program-new', {
                     url: '/program-new',
@@ -141,8 +130,10 @@ angular.module('trainapp.program')
 
     .controller('ProgramDetailCtrl', [
         '$scope',
-        'program',
-        function ($scope, program) {
+        '$stateParams',
+        'TrainingResource',
+        'HelperService',
+        function ($scope, $stateParams, TrainingResource, HelperService) {
             "use strict";
 
             /**
@@ -152,6 +143,11 @@ angular.module('trainapp.program')
             $scope.model = {};
             $scope.model.program = {};
 
-            $scope.model.program = program;
+            $scope.model.program = TrainingResource.getLastByProgramId($stateParams.programId);
+//            $scope.model.program.$promise.then(function (response) {
+//                console.log('response', response);
+//            }, function (responseError) {
+//                console.log('responseError', responseError);
+//            });
         }
     ]);

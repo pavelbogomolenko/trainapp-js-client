@@ -46,16 +46,16 @@ angular.module('trainapp', [
                     return {
                         responseError: function (response) {
                             console.log('responseError', response);
+                            var deferred = $q.defer();
                             if (response.status === 401) {
                                 $timeout(function () {
                                     $injector.get('AuthService').logout();
                                 }, 0);
-                                return $q.reject(response);
-                            } else {
-                                return HelperService.extendPromise(response, response);
                             }
+                            deferred.reject(response);
+                            return deferred.promise;
                         },
-                        response: function(response, etc) {
+                        response: function(response) {
                             return HelperService.extendPromise(response, response);
                         },
                         request: function ($config) {

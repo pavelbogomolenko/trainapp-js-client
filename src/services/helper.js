@@ -28,11 +28,10 @@ angular.module('trainapp')
                 if (this.isPromise(promise)) {
                     result.loading = true;
                     result.loaded = false;
-                    promise.then(function (response) {
+                    promise.then(function () {
                         result.loading = false;
                         result.loaded = true;
                         result.success = true;
-                        window.console && window.console.log(result);
                     }, function (errorResponse) {
                         result.loading = false;
                         result.loaded = true;
